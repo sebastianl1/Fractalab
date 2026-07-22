@@ -1,12 +1,15 @@
-# ⚡ ChaosLab STEM: Bifurcaciones ↔ Mandelbrot Explorer
+# λ FractaLab Sl: Bifurcaciones ↔ Mandelbrot Explorer
 
 [![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/es/docs/Web/JavaScript)
-[![Canvas API](https://img.shields.io/badge/HTML5-Canvas_2D-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/es/docs/Web/API/Canvas_API)
-[![Web Audio API](https://img.shields.io/badge/Web_Audio-API-9B51E0?style=for-the-badge)](https://developer.mozilla.org/es/docs/Web/API/Web_Audio_API)
-[![License](https://img.shields.io/badge/License-MIT-green.style=for-the-badge)](LICENSE)
+[![Three.js](https://img.shields.io/badge/Three.js-r152-000000?style=for-the-badge&logo=three.js&logoColor=white)](https://threejs.org/)
+[![WebGL](https://img.shields.io/badge/WebGL-2.0-990000?style=for-the-badge&logo=webgl&logoColor=white)](https://get.webgl.org/)
+[![KaTeX](https://img.shields.io/badge/KaTeX-0.16-008080?style=for-the-badge&logo=latex&logoColor=white)](https://katex.org/)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
-**ChaosLab STEM** es un **Laboratorio Virtual Interactivo** de dinamica no lineal, teoría del caos e isomorfismo con el Conjunto de Mandelbrot diseñado para educación superior e ingeniería.
+**FractaLab Sl** es un **Laboratorio Virtual Interactivo** de dinámica no lineal, teoría del caos e isomorfismo con el Conjunto de Mandelbrot, diseñado para educación superior e ingeniería.
+
+> Hecho por **Sebastián Laguna**
 
 ---
 
@@ -38,6 +41,9 @@
 
 - **🔊 Sonificación de Órbitas (Web Audio API)**:
   - Convierte las órbitas $x_n$ en tonos sonoros para *escuchar la diferencia* entre la armonía de atractores estables y el ruido del caos determinista.
+
+- **🖱️ Interacción Táctil y Móvil**:
+  - Diseño responsive y compatible con pantallas táctiles para usar en tablets y celulares.
 
 - **📖 2 Principios Pedagógicos Clave**:
   1. *El Caos es Universal*: Se manifiesta en múltiples familias de funciones bajo la misma constante universal de Feigenbaum ($\delta \approx 4.6692$).
