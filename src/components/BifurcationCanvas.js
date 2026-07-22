@@ -10,9 +10,25 @@ export class BifurcationCanvas {
     this.selectedR = 3.0;
 
     this.showLyapunov = true;
-    this.orbitDensity = 1200; // Ultra HD high density
+    this.orbitDensity = 1200;
+
+    this._rafId = null;
+    this._dirty = false;
+    this._dragging = false;
 
     this.initEvents();
+  }
+
+  _scheduleRender() {
+    if (this._rafId) return;
+    this._dirty = true;
+    this._rafId = requestAnimationFrame(() => {
+      this._rafId = null;
+      if (this._dirty) {
+        this._dirty = false;
+        this._render();
+      }
+    });
   }
 
   setModel(model) {
@@ -65,7 +81,16 @@ export class BifurcationCanvas {
   }
 
   render() {
+    this._scheduleRender();
+  }
+
+  _render() {
     if (!this.canvas.width || !this.canvas.height || !this.model) return;
+
+    // Lower orbit points during drag for responsiveness
+    const orbitPoints = this._dragging
+      ? Math.min(150, this.orbitDensity)
+      : Math.min(800, this.orbitDensity);
 
     const width = this.canvas.width;
     const height = this.canvas.height;
@@ -89,7 +114,6 @@ export class BifurcationCanvas {
     // Density-based heatmap accumulation
     const density = new Uint16Array(width * height);
     const transient = 300;
-    const orbitPoints = Math.min(800, this.orbitDensity);
 
     for (let col = 0; col < width; col++) {
       const r = this.pixelXToR(col);
@@ -133,12 +157,16 @@ export class BifurcationCanvas {
     if (this.showLyapunov) {
       this.ctx.save();
       this.ctx.beginPath();
-      const samples = Math.floor(width * 0.8);
+      const lyapIterations = this._dragging ? 80 : 400;
+      const lyapTransient = this._dragging ? 40 : 120;
+      const samples = this._dragging
+        ? Math.floor(width * 0.15)
+        : Math.floor(width * 0.8);
       let prevPy = null;
       for (let s = 0; s < samples; s++) {
         const px = (s / samples) * width;
         const r = this.pixelXToR(px);
-        const lyap = this.model.computeLyapunov(r, 400, 120);
+        const lyap = this.model.computeLyapunov(r, lyapIterations, lyapTransient);
         const normLyap = Math.max(0, Math.min(1, (lyap + 2.0) / 3.0));
         const py = (1.0 - normLyap) * height;
 
@@ -204,6 +232,7 @@ export class BifurcationCanvas {
 
     const startDrag = (clientX) => {
       isDraggingR = true;
+      this._dragging = true;
       const rect = this.canvas.getBoundingClientRect();
       const px = (clientX - rect.left) * (this.canvas.width / rect.width);
       const newR = this.pixelXToR(px);
@@ -222,6 +251,8 @@ export class BifurcationCanvas {
 
     const endDrag = () => {
       isDraggingR = false;
+      this._dragging = false;
+      this._scheduleRender();
     };
 
     // Mouse

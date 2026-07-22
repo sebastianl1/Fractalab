@@ -9,7 +9,22 @@ export class CobwebCanvas {
     this.maxSteps = 60;
     this.animatingStep = 60;
 
+    this._rafId = null;
+    this._dirty = false;
+
     this.initEvents();
+  }
+
+  _scheduleRender() {
+    if (this._rafId) return;
+    this._dirty = true;
+    this._rafId = requestAnimationFrame(() => {
+      this._rafId = null;
+      if (this._dirty) {
+        this._dirty = false;
+        this._render();
+      }
+    });
   }
 
   setModel(model) {
@@ -40,6 +55,10 @@ export class CobwebCanvas {
   }
 
   render() {
+    this._scheduleRender();
+  }
+
+  _render() {
     if (!this.canvas.width || !this.canvas.height || !this.model) return;
 
     const width = this.canvas.width;

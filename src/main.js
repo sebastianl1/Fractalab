@@ -174,8 +174,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const canvasId = btn.dataset.fullscreen;
       const panel = btn.closest('.canvas-panel');
       if (!panel) return;
-      panel.classList.toggle('fullscreen');
-      btn.textContent = panel.classList.contains('fullscreen') ? '✕' : '⛶';
+      panel.classList.toggle('maximized');
+      btn.textContent = panel.classList.contains('maximized') ? '✕' : '⛶';
       setTimeout(() => {
         if (canvasId === 'canvas-mandelbrot') mandelbrot.resize();
         else if (canvasId === 'canvas-bifurcation') bifurcation.resize();
@@ -186,17 +186,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'r' && !e.ctrlKey && !e.metaKey) {
-      const activeFullscreen = document.querySelector('.canvas-panel.fullscreen');
-      if (activeFullscreen) {
-        activeFullscreen.classList.remove('fullscreen');
-        activeFullscreen.querySelector('.btn-fullscreen').textContent = '⛶';
-        setTimeout(handleResize, 50);
-      }
-    }
     if (e.key === 'Escape') {
-      document.querySelectorAll('.canvas-panel.fullscreen').forEach(p => {
-        p.classList.remove('fullscreen');
+      document.querySelectorAll('.canvas-panel.maximized').forEach(p => {
+        p.classList.remove('maximized');
         p.querySelector('.btn-fullscreen').textContent = '⛶';
         setTimeout(handleResize, 50);
       });

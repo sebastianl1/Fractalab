@@ -105,12 +105,31 @@ export class MandelbrotShader {
     this.ctx = canvasElement.getContext('2d');
     this.useWebGL = true;
 
+    this._rafId = null;
+    this._dirty = false;
+    this._needFallbackRender = false;
+
     this.createOverlay();
     this.initGL();
     if (!this.renderer) {
       this.useWebGL = false;
     }
     this.initEvents();
+  }
+
+  _scheduleFallbackRender() {
+    if (this.useWebGL && this.renderer) return;
+    if (this._needFallbackRender) return;
+    this._needFallbackRender = true;
+    if (this._rafId) return;
+    this._rafId = requestAnimationFrame(() => {
+      this._rafId = null;
+      if (this._needFallbackRender) {
+        this._needFallbackRender = false;
+        this.renderFallback();
+        this.renderOverlay();
+      }
+    });
   }
 
   createOverlay() {
@@ -189,7 +208,12 @@ export class MandelbrotShader {
     this.canvas.height = height;
     this.ctx.imageSmoothingEnabled = false;
 
-    const imgData = this.ctx.createImageData(width, height);
+    // Use 2x pixel skip during drag for faster CPU fallback
+    const step = this.isDragging ? 2 : 1;
+    const w2 = Math.ceil(width / step);
+    const h2 = Math.ceil(height / step);
+
+    const imgData = this.ctx.createImageData(w2, h2);
     const data = imgData.data;
 
     const minX = this.centerX - this.zoom * 0.5 * (width / height);
@@ -197,11 +221,11 @@ export class MandelbrotShader {
     const dx = this.zoom * (width / height) / width;
     const dy = this.zoom / height;
 
-    for (let py = 0; py < height; py++) {
-      const ci = maxY - py * dy;
-      const rowOffset = py * width * 4;
-      for (let px = 0; px < width; px++) {
-        const cr = minX + px * dx;
+    for (let py = 0; py < h2; py++) {
+      const ci = maxY - (py * step) * dy;
+      const rowOffset = py * w2 * 4;
+      for (let px = 0; px < w2; px++) {
+        const cr = minX + (px * step) * dx;
         let zr = 0, zi = 0, zr2 = 0, zi2 = 0;
         let n = 0;
         while (zr2 + zi2 <= 4 && n < this.maxIter) {
@@ -247,7 +271,20 @@ export class MandelbrotShader {
         data[idx + 3] = 255;
       }
     }
-    this.ctx.putImageData(imgData, 0, 0);
+
+    if (step > 1) {
+      // Scale low-res image back to full size
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = w2;
+      tempCanvas.height = h2;
+      const tempCtx = tempCanvas.getContext('2d');
+      tempCtx.putImageData(imgData, 0, 0);
+      this.ctx.imageSmoothingEnabled = true;
+      this.ctx.drawImage(tempCanvas, 0, 0, width, height);
+      this.ctx.imageSmoothingEnabled = false;
+    } else {
+      this.ctx.putImageData(imgData, 0, 0);
+    }
   }
 
   setModel(model) {
@@ -422,14 +459,22 @@ export class MandelbrotShader {
       if (this.useWebGL && this.renderer) {
         this.material.uniforms.uCenter.value.set(this.centerX, this.centerY);
         this.renderGL();
+        this.renderOverlay();
       } else {
-        this.renderFallback();
+        this._scheduleFallbackRender();
       }
-      this.renderOverlay();
     };
 
     const endDrag = () => {
       this.isDragging = false;
+      // Force full quality redraw on drag end
+      if (!this.useWebGL || !this.renderer) {
+        this._needFallbackRender = false;
+        if (this._rafId) cancelAnimationFrame(this._rafId);
+        this._rafId = null;
+        this.renderFallback();
+        this.renderOverlay();
+      }
     };
 
     const handleClick = (e) => {
@@ -491,10 +536,10 @@ export class MandelbrotShader {
         this.material.uniforms.uZoom.value = this.zoom;
         this.material.uniforms.uMaxIter.value = this.maxIter;
         this.renderGL();
+        this.renderOverlay();
       } else {
-        this.renderFallback();
+        this._scheduleFallbackRender();
       }
-      this.renderOverlay();
     }, { passive: false });
   }
 }

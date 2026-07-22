@@ -557,6 +557,21 @@ select:focus {
   border-color: var(--accent-violet);
 }
 
+/* Footer */
+.app-footer {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  padding: 0.8rem 1.5rem;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.app-footer strong {
+  color: var(--accent-teal);
+  font-weight: 600;
+}
+
 /* Glow effect for connector arrow */
 .arrow {
   color: var(--accent-violet);

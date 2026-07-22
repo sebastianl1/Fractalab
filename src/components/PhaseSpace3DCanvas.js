@@ -12,7 +12,22 @@ export class PhaseSpace3DCanvas {
     this.isDragging = false;
     this.lastMouse = { x: 0, y: 0 };
 
+    this._rafId = null;
+    this._dirty = false;
+
     this.initEvents();
+  }
+
+  _scheduleRender() {
+    if (this._rafId) return;
+    this._dirty = true;
+    this._rafId = requestAnimationFrame(() => {
+      this._rafId = null;
+      if (this._dirty) {
+        this._dirty = false;
+        this._render();
+      }
+    });
   }
 
   setModel(model) {
@@ -66,6 +81,10 @@ export class PhaseSpace3DCanvas {
   }
 
   render() {
+    this._scheduleRender();
+  }
+
+  _render() {
     if (!this.canvas.width || !this.canvas.height || !this.model) return;
 
     const width = this.canvas.width;
@@ -181,7 +200,7 @@ export class PhaseSpace3DCanvas {
       this.rotX += dy * 0.008;
       this.lastMouse = { x: e.clientX, y: e.clientY };
 
-      this.render();
+      this._scheduleRender();
     });
 
     window.addEventListener('mouseup', () => {
