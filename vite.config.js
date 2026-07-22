@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/bifurcation-mandelbrot-explorer/',
+  base: './',
   build: {
     outDir: 'docs',
     assetsDir: 'assets',
