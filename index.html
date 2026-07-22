@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#080c18">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>ChaosLab STEM: Bifurcaciones ↔ Mandelbrot</title>
+  <meta name="description" content="Laboratorio virtual interactivo de dinámica no lineal, teoría del caos y el conjunto de Mandelbrot.">
+  
+  <!-- KaTeX for LaTeX rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+  <link rel="stylesheet" href="./src/styles/main.css">
+
+</head>
+<body>
+
+  <!-- Premium Header Navbar -->
+  <header class="app-header">
+    <div class="brand-logo">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-title">ChaosLab STEM 3D</div>
+    </div>
+
+    <!-- Active Model Selector -->
+    <div class="model-selector-group">
+      <label for="select-model" class="control-label">Modelo Matemático:</label>
+      <select id="select-model" class="model-select">
+        <option value="logistic">Mapa Logístico: x_{n+1} = r·x·(1-x)</option>
+        <option value="sine">Mapa Seno: x_{n+1} = r·sin(πx)</option>
+        <option value="quadratic">Mapa Cuadrático: x_{n+1} = r - x²</option>
+        <option value="exponential">Mapa Exponencial: x_{n+1} = r·e⁻ˣ</option>
+        <option value="polynomial">Polinómico Generativo: x_{n+1} = r·x·(1-xᵏ)</option>
+      </select>
+
+      <div id="poly-k-container" class="poly-k-group" style="display: none;">
+        <label for="select-poly-k" class="control-label">Grado k:</label>
+        <select id="select-poly-k">
+          <option value="2">k = 2</option>
+          <option value="3" selected>k = 3</option>
+          <option value="4">k = 4</option>
+          <option value="5">k = 5</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <button id="btn-audio" class="btn">
+        <span id="audio-icon">🔊</span>
+        <span id="audio-text">Sonificar</span>
+      </button>
+      <button id="btn-exercises" class="btn btn-accent">
+        <span>🎯</span> Ejercicios
+      </button>
+      <button id="btn-theory" class="btn btn-primary">
+        <span>📖</span> Teoría & Isomorfismo
+      </button>
+    </div>
+  </header>
+
+  <!-- Interactive Control Bar & Isomorphism Connector -->
+  <div class="control-bar">
+    <div class="control-group">
+      <label class="control-label" for="slider-r">Parámetro r:</label>
+      <input type="range" id="slider-r" min="1.0" max="4.0" step="0.0001" value="3.0" style="width: 210px;">
+      <span id="label-r-val" class="font-mono label-highlight">3.0000</span>
+    </div>
+
+    <!-- Dynamic r <-> c Isomorphism Connector Card -->
+    <div class="connector-card">
+      <span class="connector-icon">🔗</span>
+      <span class="connector-text">
+        Isomorfismo: 
+        <strong id="connector-r-text" class="font-mono">r = 3.0000</strong> 
+        <span class="arrow">⟷</span> 
+        <strong id="connector-c-text" class="font-mono" style="color: var(--accent-rose);">c = -0.7500</strong>
+      </span>
+      <div id="connector-latex" class="connector-formula"></div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label" for="select-palette">Paleta Mandelbrot:</label>
+      <select id="select-palette">
+        <option value="0">Neon Cyberpunk</option>
+        <option value="1">Fuego Ámbar</option>
+        <option value="2">Nebulosa Cósmica</option>
+        <option value="3">Azul Eléctrico</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label">
+        <input type="checkbox" id="check-lyapunov" checked>
+        Lyapunov (λ)
+      </label>
+    </div>
+
+    <button id="btn-reset" class="btn" style="margin-left: auto;">
+      <span>🔄</span> Reiniciar Vistas
+    </button>
+  </div>
+
+  <!-- Theoretical LaTeX Banner -->
+  <section class="theory-banner">
+    <div class="theory-banner-item">
+      <span class="banner-tag">Ecuación Activa:</span>
+      <span id="latex-equation" class="latex-render"></span>
+    </div>
+    <div class="theory-banner-item">
+      <span class="banner-tag">Derivada f'(x):</span>
+      <span id="latex-derivative" class="latex-render"></span>
+    </div>
+    <div class="theory-banner-principle">
+      💡 <strong>Principios:</strong> 1. <em>Caos Universal en Múltiples Funciones.</em> | 2. <em>Mandelbrot es un "Atlas" de bifurcaciones cuadráticas.</em>
+    </div>
+  </section>
+
+  <!-- Main Grid Dashboard (Dual HD Views + 3D Phase Space) -->
+  <main class="app-container">
+    <!-- Panel 1: HD Bifurcation Canvas (LEFT) -->
+    <section class="canvas-panel">
+      <div class="panel-header">
+        <span class="panel-title">
+          <span>📈</span> Diagrama de Bifurcación HD (r vs x)
+        </span>
+        <span class="panel-sub">Arrastra la línea vertical para explorar el parámetro r</span>
+        <button class="btn btn-fullscreen" data-fullscreen="canvas-bifurcation" title="Pantalla completa">⛶</button>
+      </div>
+      <div class="panel-body">
+        <canvas id="canvas-bifurcation"></canvas>
+      </div>
+    </section>
+
+    <!-- Panel 2: HD Mandelbrot Canvas (RIGHT) -->
+    <section class="canvas-panel">
+      <div class="panel-header">
+        <span class="panel-title">
+          <span>🌀</span> Conjunto de Mandelbrot & Eje Real Isomórfico (c ∈ [-2.0, 0.25])
+        </span>
+        <span class="panel-sub">Haz clic para seleccionar c o usa la rueda para Zoom</span>
+        <button class="btn btn-fullscreen" data-fullscreen="canvas-mandelbrot" title="Pantalla completa">⛶</button>
+      </div>
+      <div class="panel-body">
+        <canvas id="canvas-mandelbrot"></canvas>
+      </div>
+    </section>
+
+    <!-- Panel 3: 3D Phase Space Attractor Projection Canvas -->
+    <section class="canvas-panel">
+      <div class="panel-header">
+        <span class="panel-title">
+          <span>🧊</span> Espacio de Fases Tridimensional 3D (x<sub>n</sub>, x<sub>n+1</sub>, x<sub>n+2</sub>)
+        </span>
+        <span class="panel-sub">Arrastra con el mouse para rotar en 3D</span>
+        <button class="btn btn-fullscreen" data-fullscreen="canvas-3d-phase" title="Pantalla completa">⛶</button>
+      </div>
+      <div class="panel-body">
+        <canvas id="canvas-3d-phase"></canvas>
+      </div>
+    </section>
+
+    <!-- Panel 4: Real-time Inspector & Metrics Panel -->
+    <section class="canvas-panel">
+      <div class="panel-header">
+        <span class="panel-title">
+          <span>📊</span> Inspector Matemático & Métricas de Caos
+        </span>
+      </div>
+      <div id="inspector-container"></div>
+    </section>
+
+    <!-- Panel 5: Cobweb Phase Plot Canvas -->
+    <section class="canvas-panel grid-span-full">
+      <div class="panel-header">
+        <span class="panel-title">
+          <span>🕸️</span> Diagrama de Telaraña (Cobweb Plot: x<sub>n+1</sub> = f(x<sub>n</sub>))
+        </span>
+        <span class="panel-sub">Arrastra la condición inicial x₀ en la base</span>
+        <button class="btn btn-fullscreen" data-fullscreen="canvas-cobweb" title="Pantalla completa">⛶</button>
+      </div>
+      <div class="panel-body">
+        <canvas id="canvas-cobweb"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <!-- Real Engineering Applications Panel (Cases with Graphs) -->
+  <section class="engineering-section">
+    <div class="engineering-header">
+      <h2>🏭 Aplicaciones Reales en Ingeniería</h2>
+      <p>Casos prácticos de dinámicas no lineales en sistemas físicos, eléctricos e informáticos reales.</p>
+    </div>
+    
+    <div class="engineering-tabs" id="engineering-tabs">
+      <button class="eng-tab active" data-case="electrical">⚡ Eléctrica</button>
+      <button class="eng-tab" data-case="process">🧪 Procesos</button>
+      <button class="eng-tab" data-case="mechanical">⚙️ Mecánica</button>
+      <button class="eng-tab" data-case="environmental">🌱 Ambiental</button>
+      <button class="eng-tab" data-case="computer">💻 Informática</button>
+      <button class="eng-tab" data-case="telecom">📡 Telecom</button>
+    </div>
+
+    <div class="engineering-content-card">
+      <div class="eng-info">
+        <h3 id="eng-title">⚡ Ingeniería Eléctrica</h3>
+        <h4 id="eng-subtitle">Convertidores DC-DC Buck/Boost & Osciladores RLC No Lineales</h4>
+        <p id="eng-explanation" class="eng-desc">Cargando caso...</p>
+        <div class="eng-equation-box">
+          <span>Modelo LaTeX:</span>
+          <span id="eng-latex-eq"></span>
+        </div>
+      </div>
+      <div class="eng-graph-panel">
+        <div class="graph-title font-mono">Forma de Onda Temporal / Respuesta de Fases HD</div>
+        <canvas id="canvas-engineering" width="500" height="220"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- Guided Student Exercises Modal Dialog -->
+  <div id="modal-exercises-backdrop" class="modal-backdrop"></div>
+  <div id="modal-exercises" class="modal-window">
+    <div class="modal-header">
+      <h2>🎯 Ejercicios Guiados para Estudiantes</h2>
+      <button id="modal-ex-close-btn" class="btn">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="exercise-selector">
+        <button class="ex-nav-btn active" data-ex="ex1">Reto 1: 1ª Bifurcación</button>
+        <button class="ex-nav-btn" data-ex="ex2">Reto 2: Feigenbaum</button>
+        <button class="ex-nav-btn" data-ex="ex3">Reto 3: Periodo 3</button>
+        <button class="ex-nav-btn" data-ex="ex4">Reto 4: Caos Universal</button>
+      </div>
+
+      <div class="exercise-card">
+        <h3 id="ex-title">Cargando ejercicio...</h3>
+        <p id="ex-desc">...</p>
+        <div id="ex-instruction" class="ex-instruction-box">...</div>
+        
+        <div class="ex-verifier-box">
+          <span>Valor r Objetivo: <strong id="ex-target-label" class="font-mono">--</strong></span>
+          <span>Tu r Actual: <strong id="ex-current-label" class="font-mono">--</strong></span>
+          <button id="btn-verify-r" class="btn btn-primary">Verificar Parámetro</button>
+        </div>
+        <div id="ex-feedback" class="ex-feedback-msg"></div>
+
+        <div class="ex-question-section">
+          <h4 id="ex-question">Pregunta de Evaluación:</h4>
+          <div id="ex-options-container" class="ex-options-list"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button id="modal-ex-close-footer" class="btn btn-primary">Cerrar Taller</button>
+    </div>
+  </div>
+
+  <!-- Theory & Isomorphism Modal Dialog -->
+  <div id="modal-backdrop" class="modal-backdrop"></div>
+  <div id="modal-theory" class="modal-window">
+    <div class="modal-header">
+      <h2>Isomorfismo: Bifurcaciones ↔ Conjunto de Mandelbrot</h2>
+      <button id="modal-close-btn" class="btn">✕</button>
+    </div>
+    <div class="modal-body">
+      <h3>1. Principios Pedagógicos Fundamentales</h3>
+      <p>
+        <strong>1. El Caos es Universal:</strong> La transición hacia el caos no es una anomalía de una función aislada. Ya sea el mapa logístico, el mapa seno o funciones exponenciales, todos los mapas cuadráticos y unimodales siguen la misma ruta de duplicación de periodo regida por la constante de Feigenbaum <code id="latex-feigenbaum-delta"></code>.
+      </p>
+      <p>
+        <strong>2. Mandelbrot como Atlas:</strong> El Conjunto de Mandelbrot no es solo una figura estética; es un <em>atlas completo</em> que cartografía todas las bifurcaciones y ciclos límite cuadráticos sobre su eje real <code id="latex-mandelbrot-slice"></code>.
+      </p>
+
+      <h3>2. Transformación Lineal de Isomorfismo</h3>
+      <p>
+        Mediante la transformación exacta <code>z = -r·x + r/2</code> y evaluando la iteración cuadrática sobre los reales, obtenemos la equivalencia directa entre parámetros:
+        <br>
+        <span id="latex-iso-proof" class="latex-block"></span>
+      </p>
+
+      <h3>3. Exponente de Lyapunov (λ)</h3>
+      <p>
+        Mide la sensibilidad a las condiciones iniciales (Efecto Mariposa):
+        <ul>
+          <li><strong>λ &lt; 0:</strong> El sistema converge a una órbita periódica estable.</li>
+          <li><strong>λ = 0:</strong> Punto crítico de bifurcación.</li>
+          <li><strong>λ &gt; 0:</strong> El sistema entra en <strong>Caos Determinista</strong>.</li>
+        </ul>
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button id="modal-understand-btn" class="btn btn-primary">Entendido</button>
+    </div>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
