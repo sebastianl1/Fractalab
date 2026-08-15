@@ -6,6 +6,24 @@ y el proyecto usa [Conventional Commits](https://www.conventionalcommits.org/).
 
 ## [En desarrollo]
 
+### Diseño — Rediseño premium
+- Fondo ambiental cinematográfico (halos degradados, grid, starfield) con
+  `prefers-reduced-motion`.
+- Hero del laboratorio con título con degradado animado, órbita visual y
+  badges de características.
+- Paneles glassmorphism con borde degradado, hover elevado y reveal-on-scroll
+  escalonado (IntersectionObserver, solo transform/opacity).
+- Tabs con píldoras degradadas y botones con glow.
+- Scrollbar personalizado.
+
+### Seguridad y despliegue
+- **CSP** (Content-Security-Policy) con allowlist de CDNs (KaTeX, Google Fonts,
+  YouTube) y workers same-origin.
+- **Página 404** personalizada.
+- **Deploy de GitHub Pages corregido**: se usa el mecanismo oficial
+  (`configure-pages` + `upload-pages-artifact` + `deploy-pages`) compatible con
+  la fuente "GitHub Actions", eliminando el HTML obsoleto en caché que se servía.
+
 ### Añadido — Pestañas y contenido educativo
 - Navegación **multi-pestaña** por hash: Laboratorio, Aprende, Ejemplos,
   Videos y Recursos.

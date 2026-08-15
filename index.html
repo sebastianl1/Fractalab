@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#080c18" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data: https://img.youtube.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com; connect-src 'self' data: blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'"
+    />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>FractaLab Sl: Bifurcaciones ↔ Mandelbrot</title>
@@ -59,6 +63,15 @@
     </script>
   </head>
   <body>
+    <!-- Ambient cinematic background (depth 0-1) -->
+    <div class="ambient-bg" aria-hidden="true">
+      <div class="ambient-glow glow-a"></div>
+      <div class="ambient-glow glow-b"></div>
+      <div class="ambient-glow glow-c"></div>
+      <div class="grid-overlay"></div>
+      <div class="starfield"></div>
+    </div>
+
     <!-- Premium Header Navbar -->
     <header class="app-header">
       <div class="brand-logo">
@@ -112,8 +125,34 @@
 
     <!-- ======================= VIEW: LAB ======================= -->
     <div data-view="lab" class="active">
+      <!-- Lab Hero Banner -->
+      <section class="lab-hero reveal">
+        <div class="lab-hero-copy">
+          <p class="lab-hero-eyebrow">⌬ Laboratorio virtual de dinámica no lineal</p>
+          <h1 class="lab-hero-title">
+            Explora el <span class="grad-text">caos determinista</span>
+          </h1>
+          <p class="lab-hero-sub">
+            Bifurcaciones, exponente de Lyapunov y el conjunto de Mandelbrot: un atlas interactivo
+            para entender cómo el orden se convierte en caos.
+          </p>
+          <div class="lab-hero-badges">
+            <span class="hero-badge">🧮 10 modelos</span>
+            <span class="hero-badge">📈 Lyapunov en vivo</span>
+            <span class="hero-badge">🧭 Mandelbrot ↔ Bifurcación</span>
+            <span class="hero-badge">🔊 Sonificación</span>
+          </div>
+        </div>
+        <div class="lab-hero-visual" aria-hidden="true">
+          <div class="hero-orb hero-orb-1"></div>
+          <div class="hero-orb hero-orb-2"></div>
+          <div class="hero-orb hero-orb-3"></div>
+          <div class="hero-lambda">λ</div>
+        </div>
+      </section>
+
       <!-- Interactive Control Bar & Isomorphism Connector -->
-      <div class="control-bar">
+      <div class="control-bar reveal">
         <div class="control-group">
           <label class="control-label" for="slider-r" data-i18n="ctrl.r">Parámetro r:</label>
           <input
@@ -204,7 +243,7 @@
       </section>
 
       <!-- Main Grid Dashboard (Dual HD Views + 3D Phase Space) -->
-      <main class="app-container">
+      <main class="app-container reveal">
         <!-- Panel 1: HD Bifurcation Canvas (LEFT) -->
         <section class="canvas-panel">
           <div class="panel-header">
@@ -369,7 +408,7 @@
       </main>
 
       <!-- Real Engineering Applications Panel (Cases with Graphs) -->
-      <section class="engineering-section">
+      <section class="engineering-section reveal">
         <div class="engineering-header">
           <h2 data-i18n="eng.title">🏭 Aplicaciones Reales en Ingeniería</h2>
           <p data-i18n="eng.subtitle">
