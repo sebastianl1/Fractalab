@@ -5,6 +5,7 @@ import type {
   BifurcationComputeRequest,
   BifurcationComputeResult,
 } from '../math/bifurcationCompute.js';
+import { viz } from '../core/theme.js';
 
 /**
  * 2D canvas rendering of the bifurcation diagram + Lyapunov curve.
@@ -216,11 +217,12 @@ export class BifurcationCanvas {
       this.requestCompute();
     }
 
-    this.ctx.fillStyle = '#040714';
+    const colors = viz();
+    this.ctx.fillStyle = colors.bg;
     this.ctx.fillRect(0, 0, width, height);
 
     // Grid lines
-    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
+    this.ctx.strokeStyle = colors.grid;
     this.ctx.lineWidth = 1;
     const stepR = (this.rRange.max - this.rRange.min) / 6;
     for (let r = this.rRange.min; r <= this.rRange.max; r += stepR) {
@@ -248,13 +250,13 @@ export class BifurcationCanvas {
     this.ctx.beginPath();
     this.ctx.moveTo(selPx, 0);
     this.ctx.lineTo(selPx, height);
-    this.ctx.strokeStyle = '#f43f5e';
+    this.ctx.strokeStyle = colors.rose;
     this.ctx.lineWidth = 3;
-    this.ctx.shadowColor = '#f43f5e';
+    this.ctx.shadowColor = colors.rose;
     this.ctx.shadowBlur = 14;
     this.ctx.stroke();
 
-    this.ctx.fillStyle = '#ffffff';
+    this.ctx.fillStyle = colors.ink;
     this.ctx.font = 'bold 12px "JetBrains Mono", monospace';
     this.ctx.fillText(`r = ${this.selectedR.toFixed(4)}`, Math.min(selPx + 8, width - 95), 24);
     this.ctx.restore();
@@ -263,6 +265,7 @@ export class BifurcationCanvas {
   private drawLyapunovFromCache(width: number, height: number): void {
     const arr = this.lyapunovNorm;
     if (!arr) return;
+    const colors = viz();
     this.ctx.save();
     this.ctx.beginPath();
     let prevPy: number | null = null;
@@ -281,9 +284,9 @@ export class BifurcationCanvas {
       }
       prevPy = py;
     }
-    this.ctx.strokeStyle = '#f59e0b';
+    this.ctx.strokeStyle = colors.amber;
     this.ctx.lineWidth = 2.5;
-    this.ctx.shadowColor = '#f59e0b';
+    this.ctx.shadowColor = colors.amber;
     this.ctx.shadowBlur = 10;
     this.ctx.stroke();
 
@@ -292,7 +295,7 @@ export class BifurcationCanvas {
     this.ctx.setLineDash([5, 5]);
     this.ctx.moveTo(0, zeroPy);
     this.ctx.lineTo(width, zeroPy);
-    this.ctx.strokeStyle = 'rgba(255, 170, 0, 0.4)';
+    this.ctx.strokeStyle = colors.grid;
     this.ctx.stroke();
     this.ctx.restore();
   }

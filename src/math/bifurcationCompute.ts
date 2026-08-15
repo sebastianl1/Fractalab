@@ -88,7 +88,8 @@ export function computeBifurcationData(
   };
 }
 
-/** Fill an RGBA buffer (ImageData.data) with the bifurcation heatmap colors. */
+/** Fill an RGBA buffer (ImageData.data) with the bifurcation heatmap colors.
+ *  Solar map: cool cyan at low density → warm amber/white at high density. */
 export function colorizeDensity(
   density: Uint16Array,
   maxDensity: number,
@@ -102,14 +103,14 @@ export function colorizeDensity(
       const t = Math.min(1, Math.log(1 + d) * invLog);
       if (t < 0.5) {
         const t2 = t * 2;
-        out[idx] = Math.floor(t2 * 10);
-        out[idx + 1] = Math.floor(t2 * 80);
-        out[idx + 2] = Math.floor(40 + t2 * 120);
+        out[idx] = Math.floor(t2 * 30);
+        out[idx + 1] = Math.floor(120 + t2 * 100);
+        out[idx + 2] = Math.floor(190 + t2 * 65);
       } else {
         const t2 = (t - 0.5) * 2;
-        out[idx] = Math.floor(t2 * 200);
-        out[idx + 1] = Math.floor(80 + t2 * 175);
-        out[idx + 2] = Math.floor(160 - t2 * 60);
+        out[idx] = Math.floor(190 + t2 * 65);
+        out[idx + 1] = Math.floor(140 + t2 * 95);
+        out[idx + 2] = Math.floor(40 + t2 * 180);
       }
       out[idx + 3] = 255;
     }

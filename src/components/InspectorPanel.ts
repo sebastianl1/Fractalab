@@ -2,6 +2,7 @@ import type { BifurcationModel } from '../math/models/BaseModel.js';
 import { LYAPUNOV_CONFIG } from '../math/lyapunovConfig.js';
 import { BIFURCATION_MILESTONES } from '../math/feigenbaum.js';
 import type { BifurcationMilestone } from '../math/feigenbaum.js';
+import { viz } from '../core/theme.js';
 
 /** Live mathematical inspector: state badge, metrics and Feigenbaum milestone. */
 export class InspectorPanel {
@@ -27,18 +28,19 @@ export class InspectorPanel {
     );
     const period = this.model.detectPeriod(r);
 
+    const colors = viz();
     let stateBadge: string;
     let stateColor: string;
 
     if (lyapunov > 0.05) {
       stateBadge = 'DETERMINISTIC CHAOS 🌀';
-      stateColor = '#f43f5e';
+      stateColor = colors.rose;
     } else if (period > 0) {
       stateBadge = `ATRACTOR PERIODO ${period} 🎵`;
-      stateColor = '#06b6d4';
+      stateColor = colors.cyan;
     } else {
       stateBadge = 'BIFURCACIÓN CRÍTICA ⚡';
-      stateColor = '#f59e0b';
+      stateColor = colors.amber;
     }
 
     const closest = this.findClosestMilestone(r);
@@ -60,7 +62,10 @@ export class InspectorPanel {
           </div>
           <div class="metric-item">
             <span class="metric-label">Exponente de Lyapunov (λ)</span>
-            <span class="metric-value font-mono" style="color: ${lyapunov > 0 ? '#f43f5e' : '#06b6d4'}">
+            <span
+              class="metric-value font-mono"
+              style="color: ${lyapunov > 0 ? colors.rose : colors.cyan}"
+            >
               ${lyapunov.toFixed(4)}
             </span>
           </div>

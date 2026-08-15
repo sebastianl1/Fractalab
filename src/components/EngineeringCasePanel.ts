@@ -1,10 +1,12 @@
 import { ENGINEERING_CASES, generateEngineeringSignal } from '../math/engineeringCases.js';
 import type { EngineeringCase } from '../math/engineeringCases.js';
 import { renderLatex } from '../math/latexHelper.js';
+import { viz } from '../core/theme.js';
 
 /** Panel of real engineering applications with a synthetic waveform preview. */
 export class EngineeringCasePanel {
   private onSelectModelAndR: (modelId: string, targetR: number) => void;
+  private currentCaseId = 'electrical';
 
   private titleEl: HTMLElement | null;
   private subtitleEl: HTMLElement | null;
@@ -42,6 +44,7 @@ export class EngineeringCasePanel {
   }
 
   selectCase(caseId: string): void {
+    this.currentCaseId = caseId;
     const caseData = ENGINEERING_CASES.find((c) => c.id === caseId) ?? ENGINEERING_CASES[0]!;
 
     const tabs = this.tabsContainer?.querySelectorAll('.eng-tab') ?? [];
@@ -75,11 +78,12 @@ export class EngineeringCasePanel {
 
     const width = this.canvas.width;
     const height = this.canvas.height;
+    const colors = viz();
 
-    this.ctx.fillStyle = '#040714';
+    this.ctx.fillStyle = colors.bg;
     this.ctx.fillRect(0, 0, width, height);
 
-    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+    this.ctx.strokeStyle = colors.grid;
     this.ctx.lineWidth = 1 * dpr;
     const gridStepX = 50 * dpr;
     for (let x = 0; x < width; x += gridStepX) {
@@ -101,11 +105,18 @@ export class EngineeringCasePanel {
       else this.ctx.lineTo(px, py);
     }
 
-    this.ctx.strokeStyle = '#06b6d4';
+    this.ctx.strokeStyle = colors.cyan;
     this.ctx.lineWidth = 2.5 * dpr;
-    this.ctx.shadowColor = '#06b6d4';
+    this.ctx.shadowColor = colors.cyan;
     this.ctx.shadowBlur = 10 * dpr;
     this.ctx.stroke();
     this.ctx.shadowBlur = 0;
+  }
+
+  /** Re-render the current case (e.g. after a theme change). */
+  refresh(): void {
+    const caseData =
+      ENGINEERING_CASES.find((c) => c.id === this.currentCaseId) ?? ENGINEERING_CASES[0]!;
+    this.renderSignal(caseData);
   }
 }

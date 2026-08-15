@@ -6,7 +6,20 @@ y el proyecto usa [Conventional Commits](https://www.conventionalcommits.org/).
 
 ## [En desarrollo]
 
-### Diseño — Rediseño premium
+### Diseño — Identidad "Observatorio Espacial"
+- Rediseño completo del design system: paleta ámbar solar + cian profundo
+  sobre casi-negro (dark) y marfil (light).
+- **Toggle claro/oscuro** con persistencia en localStorage y detección por
+  `prefers-color-scheme`, aplicado antes del primer render (sin flash).
+- Tipografía **Space Grotesk** (display) + Inter + JetBrains Mono.
+- Tokens de visualización (`--viz-*`) que re-theman todos los canvas al
+  cambiar de tema: Mandelbrot (4 paletas nuevas en shader y fallback CPU),
+  heatmap de bifurcación (solar cian→ámbar), Lyapunov, cobweb, serie
+  temporal, histograma, escena 3D e inspector.
+- En tema claro se ocultan los efectos de espacio (starfield/grid); los
+  halos ambientales se mantienen sutiles.
+
+### Seguridad y despliegue
 - Fondo ambiental cinematográfico (halos degradados, grid, starfield) con
   `prefers-reduced-motion`.
 - Hero del laboratorio con título con degradado animado, órbita visual y

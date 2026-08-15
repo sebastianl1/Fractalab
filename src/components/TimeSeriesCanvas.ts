@@ -1,4 +1,5 @@
 import type { BifurcationModel } from '../math/models/BaseModel.js';
+import { viz } from '../core/theme.js';
 
 const POINTS = 140;
 const TRANSIENT = 200;
@@ -56,8 +57,9 @@ export class TimeSeriesCanvas {
     const width = this.canvas.width;
     const height = this.canvas.height;
     const dpr = Math.max(window.devicePixelRatio || 1, 2);
+    const colors = viz();
 
-    this.ctx.fillStyle = '#040714';
+    this.ctx.fillStyle = colors.bg;
     this.ctx.fillRect(0, 0, width, height);
 
     const orbit = this.model.getOrbit(this.r, TRANSIENT, POINTS);
@@ -73,7 +75,7 @@ export class TimeSeriesCanvas {
     const mapY = (v: number): number => y0 + (1 - (v - xMin) / span) * plotH;
 
     // zero baseline / mid line
-    this.ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    this.ctx.strokeStyle = colors.grid;
     this.ctx.lineWidth = 1;
     const midY = mapY(xMin + span / 2);
     this.ctx.beginPath();
@@ -89,15 +91,15 @@ export class TimeSeriesCanvas {
       if (i === 0) this.ctx.moveTo(px, py);
       else this.ctx.lineTo(px, py);
     }
-    this.ctx.strokeStyle = '#06b6d4';
+    this.ctx.strokeStyle = colors.cyan;
     this.ctx.lineWidth = 1.6 * dpr;
-    this.ctx.shadowColor = '#06b6d4';
+    this.ctx.shadowColor = colors.cyan;
     this.ctx.shadowBlur = 6 * dpr;
     this.ctx.stroke();
     this.ctx.shadowBlur = 0;
 
     // points
-    this.ctx.fillStyle = 'rgba(244, 63, 94, 0.85)';
+    this.ctx.fillStyle = colors.rose;
     for (let i = 0; i < POINTS; i += 2) {
       const px = x0 + (i / (POINTS - 1)) * plotW;
       const py = mapY(orbit[i] ?? 0);
@@ -106,7 +108,7 @@ export class TimeSeriesCanvas {
       this.ctx.fill();
     }
 
-    this.ctx.fillStyle = '#ffffff';
+    this.ctx.fillStyle = colors.ink;
     this.ctx.font = `${Math.floor(11 * dpr)}px "JetBrains Mono", monospace`;
     this.ctx.fillText(`${this.model.name} | r = ${this.r.toFixed(4)}`, x0 + 6 * dpr, y0 + 16 * dpr);
   }

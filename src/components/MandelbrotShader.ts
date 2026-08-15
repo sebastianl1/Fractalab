@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import type { BifurcationModel } from '../math/models/BaseModel.js';
+import { viz } from '../core/theme.js';
 import type {
   MandelbrotComputeRequest,
   MandelbrotComputeResult,
@@ -26,34 +27,32 @@ uniform vec2  uResolution;
 
 varying vec2 vUv;
 
+// Observatorio Espacial palettes (mirrored in mandelbrotCompute.ts)
 vec3 palette0(float t) {
-  return 0.5 + 0.5 * cos(6.28318 * (t + vec3(0.0, 0.33, 0.67)));
+  return vec3(1.0, 0.45 + 0.35 * t, 0.05 + 0.25 * t * t);
 }
 
 vec3 palette1(float t) {
-  return vec3(pow(t, 0.5) * 1.2, pow(t, 1.2) * 0.78, pow(t, 2.5));
+  return 0.5 + 0.5 * cos(6.28318 * (t + vec3(0.6, 0.7, 0.9)));
 }
 
 vec3 palette2(float t) {
-  float r = sin(t * 3.14159) * 0.7 + 0.08;
-  float g = cos(t * 3.14159 * 0.5) * 0.86 + 0.14;
-  float b = sin(t * 3.14159 * 1.5) * 0.9 + 0.1;
+  float r = 0.75 + 0.25 * cos(6.28318 * t);
+  float g = 0.5 + 0.3 * cos(6.28318 * t + 1.2);
+  float b = 0.4 + 0.25 * cos(6.28318 * t + 2.4);
   return vec3(r, g, b);
 }
 
 vec3 palette3(float t) {
-  float r = pow(t, 2.0) * 0.31;
-  float g = pow(t, 0.7) * 0.86;
-  float b = pow(t, 0.4);
-  return vec3(r, g, b);
+  return vec3(0.15 + 0.5 * pow(t, 2.0), 0.4 + 0.45 * pow(t, 0.8), 0.7 + 0.3 * pow(t, 0.5));
 }
 
 vec3 getColor(float smooth, float maxIter, float palette) {
-  if (smooth >= maxIter) return vec3(0.04, 0.055, 0.1);
+  if (smooth >= maxIter) return vec3(0.024, 0.031, 0.051);
   float t = smooth / maxIter;
   float cycle = fract(smooth * 0.08);
   if (palette < 0.5) return palette0(cycle);
-  else if (palette < 1.5) return palette1(t);
+  else if (palette < 1.5) return palette1(cycle);
   else if (palette < 2.5) return palette2(cycle);
   else return palette3(t);
 }
@@ -455,6 +454,7 @@ export class MandelbrotShader {
 
   private renderOverlay(): void {
     if (!this.overlayCtx) return;
+    const colors = viz();
     const ctx = this.overlayCtx;
     ctx.clearRect(0, 0, this.overlayCanvas.width, this.overlayCanvas.height);
 
@@ -466,26 +466,28 @@ export class MandelbrotShader {
     ctx.beginPath();
     ctx.moveTo(pStart.px, pStart.py);
     ctx.lineTo(pEnd.px, pEnd.py);
-    ctx.strokeStyle = '#8b5cf6';
+    ctx.strokeStyle = colors.violet;
     ctx.lineWidth = 3;
-    ctx.shadowColor = '#8b5cf6';
+    ctx.shadowColor = colors.violet;
     ctx.shadowBlur = 10;
     ctx.stroke();
 
     const pSel = this.complexToPixel(this.selectedC, 0.0);
     ctx.beginPath();
     ctx.arc(pSel.px, pSel.py, 9, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(255, 0, 128, 0.4)';
+    ctx.globalAlpha = 0.35;
+    ctx.fillStyle = colors.rose;
     ctx.fill();
+    ctx.globalAlpha = 1;
     ctx.beginPath();
     ctx.arc(pSel.px, pSel.py, 5, 0, Math.PI * 2);
-    ctx.fillStyle = '#f43f5e';
-    ctx.strokeStyle = '#ffffff';
+    ctx.fillStyle = colors.rose;
+    ctx.strokeStyle = colors.ink;
     ctx.lineWidth = 2;
     ctx.fill();
     ctx.stroke();
 
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = colors.ink;
     ctx.font = '11px "JetBrains Mono", monospace';
     ctx.fillText(`c = ${this.selectedC.toFixed(4)}`, pSel.px + 10, pSel.py - 10);
 

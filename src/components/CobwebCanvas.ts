@@ -1,4 +1,5 @@
 import type { BifurcationModel } from '../math/models/BaseModel.js';
+import { viz } from '../core/theme.js';
 
 /** 2D cobweb / staircase plot of x_{n+1} = f(x_n). */
 export class CobwebCanvas {
@@ -71,6 +72,7 @@ export class CobwebCanvas {
     const width = this.canvas.width;
     const height = this.canvas.height;
     const dpr = Math.max(window.devicePixelRatio || 1, 2);
+    const colors = viz();
 
     const margin = Math.min(width, height) * 0.1;
     const size = Math.min(width, height) - margin * 2;
@@ -84,11 +86,11 @@ export class CobwebCanvas {
     const mapX = (val: number): number => startX + ((val - xMin) / xSpan) * size;
     const mapY = (val: number): number => startY - ((val - xMin) / xSpan) * size;
 
-    this.ctx.fillStyle = '#040714';
+    this.ctx.fillStyle = colors.bg;
     this.ctx.fillRect(0, 0, width, height);
 
     // Border
-    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+    this.ctx.strokeStyle = colors.grid;
     this.ctx.lineWidth = 1.5 * dpr;
     this.ctx.strokeRect(startX, startY - size, size, size);
 
@@ -96,7 +98,7 @@ export class CobwebCanvas {
     this.ctx.beginPath();
     this.ctx.moveTo(mapX(xMin), mapY(xMin));
     this.ctx.lineTo(mapX(xMax), mapY(xMax));
-    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+    this.ctx.strokeStyle = colors.ink;
     this.ctx.lineWidth = 1.5 * dpr;
     this.ctx.setLineDash([5 * dpr, 5 * dpr]);
     this.ctx.stroke();
@@ -113,9 +115,9 @@ export class CobwebCanvas {
       if (i === 0) this.ctx.moveTo(px, py);
       else this.ctx.lineTo(px, py);
     }
-    this.ctx.strokeStyle = '#8b5cf6';
+    this.ctx.strokeStyle = colors.violet;
     this.ctx.lineWidth = 3 * dpr;
-    this.ctx.shadowColor = '#8b5cf6';
+    this.ctx.shadowColor = colors.violet;
     this.ctx.shadowBlur = 10 * dpr;
     this.ctx.stroke();
     this.ctx.shadowBlur = 0;
@@ -132,9 +134,9 @@ export class CobwebCanvas {
       currX = nextY;
     }
 
-    this.ctx.strokeStyle = '#f43f5e';
+    this.ctx.strokeStyle = colors.rose;
     this.ctx.lineWidth = 2 * dpr;
-    this.ctx.shadowColor = '#f43f5e';
+    this.ctx.shadowColor = colors.rose;
     this.ctx.shadowBlur = 8 * dpr;
     this.ctx.stroke();
     this.ctx.shadowBlur = 0;
@@ -142,10 +144,10 @@ export class CobwebCanvas {
     // Initial condition marker
     this.ctx.beginPath();
     this.ctx.arc(mapX(this.x0), mapY(this.x0), 4 * dpr, 0, Math.PI * 2);
-    this.ctx.fillStyle = '#ffffff';
+    this.ctx.fillStyle = colors.ink;
     this.ctx.fill();
 
-    this.ctx.fillStyle = '#ffffff';
+    this.ctx.fillStyle = colors.ink;
     this.ctx.font = `${Math.floor(12 * dpr)}px "JetBrains Mono", monospace`;
     this.ctx.fillText(
       `${this.model.name} | r = ${this.r.toFixed(4)} | x₀ = ${this.x0.toFixed(4)}`,

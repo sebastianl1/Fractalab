@@ -24,36 +24,43 @@ export interface MandelbrotComputeResult {
   step: number;
 }
 
+/**
+ * Mirrors the WebGL fragment-shader palettes so the CPU fallback produces
+ * identical colors. Palettes follow the "Observatorio Espacial" identity.
+ */
 function shade(smooth: number, maxIter: number, palette: number): [number, number, number] {
-  if (smooth >= maxIter) return [10, 14, 26];
+  if (smooth >= maxIter) return [6, 8, 13];
   const t = smooth / maxIter;
   const cycle = (smooth * 0.08) % 1;
+
+  // Solar — amber → gold → deep orange
   if (palette === 0) {
-    return [
-      Math.floor(Math.sin(cycle * Math.PI * 2) * 127 + 128),
-      Math.floor(Math.sin((cycle + 0.33) * Math.PI * 2) * 127 + 128),
-      Math.floor(Math.sin((cycle + 0.66) * Math.PI * 2) * 127 + 128),
-    ];
+    const r = 1.0;
+    const g = 0.45 + 0.35 * t;
+    const b = 0.05 + 0.25 * t * t;
+    return [r * 255, g * 255, b * 255];
   }
+  // Nebulosa — cyan → violet
   if (palette === 1) {
-    return [
-      Math.floor(Math.min(255, Math.pow(t, 0.5) * 255 * 1.2)),
-      Math.floor(Math.min(255, Math.pow(t, 1.2) * 200)),
-      Math.floor(Math.min(255, Math.pow(t, 2.5) * 255)),
-    ];
+    const x = 6.28318 * cycle;
+    const r = 0.5 + 0.5 * Math.cos(x + 0.6);
+    const g = 0.5 + 0.5 * Math.cos(x + 0.7);
+    const b = 0.5 + 0.5 * Math.cos(x + 0.9);
+    return [r * 255, g * 255, b * 255];
   }
+  // Espectro — warm white → rose → amber
   if (palette === 2) {
-    return [
-      Math.floor(Math.sin(cycle * Math.PI) * 180 + 20),
-      Math.floor(Math.cos(cycle * Math.PI * 0.5) * 220 + 35),
-      Math.floor(Math.sin(cycle * Math.PI * 1.5) * 230 + 25),
-    ];
+    const x = 6.28318 * cycle;
+    const r = 0.75 + 0.25 * Math.cos(x);
+    const g = 0.5 + 0.3 * Math.cos(x + 1.2);
+    const b = 0.4 + 0.25 * Math.cos(x + 2.4);
+    return [r * 255, g * 255, b * 255];
   }
-  return [
-    Math.floor(Math.pow(t, 2) * 80),
-    Math.floor(Math.pow(t, 0.7) * 220),
-    Math.floor(Math.pow(t, 0.4) * 255),
-  ];
+  // Atlas — teal → deep blue (light-friendly)
+  const r = 0.15 + 0.5 * Math.pow(t, 2.0);
+  const g = 0.4 + 0.45 * Math.pow(t, 0.8);
+  const b = 0.7 + 0.3 * Math.pow(t, 0.5);
+  return [r * 255, g * 255, b * 255];
 }
 
 export function computeMandelbrot(req: MandelbrotComputeRequest): MandelbrotComputeResult {

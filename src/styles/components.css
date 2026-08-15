@@ -32,25 +32,25 @@
 }
 
 .btn-primary {
-  background: rgba(139, 92, 246, 0.15);
-  border-color: rgba(139, 92, 246, 0.3);
+  background: rgba(255, 176, 32, 0.15);
+  border-color: rgba(255, 176, 32, 0.3);
 }
 
 .btn-primary:hover {
-  background: rgba(139, 92, 246, 0.25);
+  background: rgba(255, 176, 32, 0.25);
   border-color: var(--accent-violet);
   box-shadow: var(--glow-violet);
 }
 
 .btn-accent {
-  background: rgba(245, 158, 11, 0.12);
-  border-color: rgba(245, 158, 11, 0.25);
+  background: rgba(255, 176, 32, 0.12);
+  border-color: rgba(255, 176, 32, 0.25);
 }
 
 .btn-accent:hover {
-  background: rgba(245, 158, 11, 0.2);
+  background: rgba(255, 176, 32, 0.2);
   border-color: var(--accent-amber);
-  box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+  box-shadow: 0 0 10px rgba(255, 176, 32, 0.2);
 }
 
 /* Inspector Card */
@@ -110,8 +110,8 @@
 }
 
 .milestone-box {
-  background: rgba(139, 92, 246, 0.04);
-  border: 1px solid rgba(139, 92, 246, 0.12);
+  background: rgba(255, 176, 32, 0.04);
+  border: 1px solid rgba(255, 176, 32, 0.12);
   padding: 0.45rem 0.65rem;
   border-radius: var(--radius-sm);
 }
@@ -168,15 +168,15 @@
 }
 
 .eng-tab:hover {
-  background: rgba(139, 92, 246, 0.1);
-  border-color: rgba(139, 92, 246, 0.3);
+  background: rgba(255, 176, 32, 0.1);
+  border-color: rgba(255, 176, 32, 0.3);
   color: var(--text-primary);
 }
 
 .eng-tab.active {
-  background: rgba(139, 92, 246, 0.15);
+  background: rgba(255, 176, 32, 0.15);
   border-color: var(--accent-violet);
-  color: #fff;
+  color: var(--text-primary);
   box-shadow: var(--glow-violet);
 }
 
@@ -204,7 +204,7 @@
 
 .eng-info h3 {
   font-size: 1.05rem;
-  color: #fff;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
@@ -265,7 +265,7 @@
   width: 92%;
   max-width: 720px;
   max-height: 85vh;
-  background: #0d1225;
+  background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   z-index: 201;
@@ -300,7 +300,7 @@
   padding: 1.2rem;
   overflow-y: auto;
   line-height: 1.55;
-  color: #94a3b8;
+  color: var(--text-secondary);
   font-size: 0.88rem;
   display: flex;
   flex-direction: column;
@@ -340,15 +340,15 @@
 }
 
 .ex-nav-btn:hover {
-  background: rgba(139, 92, 246, 0.08);
-  border-color: rgba(139, 92, 246, 0.25);
+  background: rgba(255, 176, 32, 0.08);
+  border-color: rgba(255, 176, 32, 0.25);
   color: var(--text-primary);
 }
 
 .ex-nav-btn.active {
-  background: rgba(245, 158, 11, 0.12);
+  background: rgba(255, 176, 32, 0.12);
   border-color: var(--accent-amber);
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .exercise-card {
@@ -362,7 +362,7 @@
 }
 
 .ex-instruction-box {
-  background: rgba(6, 182, 212, 0.04);
+  background: rgba(77, 214, 255, 0.04);
   border-left: 3px solid var(--accent-teal);
   padding: 0.5rem 0.75rem;
   font-size: 0.82rem;
@@ -413,13 +413,13 @@
 }
 
 .ex-option-btn.correct {
-  background: rgba(16, 185, 129, 0.15);
+  background: rgba(52, 211, 153, 0.15);
   border-color: var(--accent-emerald);
   color: var(--accent-emerald);
 }
 
 .ex-option-btn.incorrect {
-  background: rgba(244, 63, 94, 0.15);
+  background: rgba(255, 107, 107, 0.15);
   border-color: var(--accent-rose);
   color: var(--accent-rose);
 }
@@ -496,7 +496,7 @@ input[type='range']::-webkit-slider-thumb {
   border-radius: 50%;
   background: var(--accent-violet);
   cursor: pointer;
-  box-shadow: 0 0 6px rgba(139, 92, 246, 0.4);
+  box-shadow: 0 0 6px rgba(255, 176, 32, 0.4);
   transition: transform var(--transition-fast);
 }
 
@@ -511,7 +511,7 @@ input[type='range']::-moz-range-thumb {
   background: var(--accent-violet);
   cursor: pointer;
   border: none;
-  box-shadow: 0 0 6px rgba(139, 92, 246, 0.4);
+  box-shadow: 0 0 6px rgba(255, 176, 32, 0.4);
 }
 
 input[type='checkbox'] {
@@ -536,7 +536,7 @@ input[type='checkbox']:checked {
 
 input[type='checkbox']:checked::after {
   content: '✓';
-  color: #fff;
+  color: var(--text-primary);
   font-size: 10px;
   font-weight: bold;
 }

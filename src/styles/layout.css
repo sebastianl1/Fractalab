@@ -4,7 +4,7 @@
 
 /* --- Site header (brand + tabs, global) --- */
 .site-header {
-  background: rgba(13, 18, 37, 0.95);
+  background: var(--bg-secondary);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-color);
@@ -36,7 +36,7 @@
 
 .btn-lang:hover {
   border-color: var(--accent-violet);
-  color: #fff;
+  color: var(--text-primary);
 }
 
 /* --- Lab toolbar (exclusive to the Laboratory tab) --- */
@@ -74,7 +74,7 @@
 .brand-title {
   font-size: 1rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #f1f5f9, var(--accent-teal));
+  background: linear-gradient(135deg, var(--text-primary), var(--accent-teal));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -182,7 +182,7 @@ input[type='range']::-webkit-slider-thumb {
   border-radius: 50%;
   background: var(--accent-violet);
   cursor: pointer;
-  box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 8px rgba(255, 176, 32, 0.5);
   transition: transform var(--transition-fast);
 }
 
@@ -197,13 +197,13 @@ input[type='range']::-moz-range-thumb {
   background: var(--accent-violet);
   cursor: pointer;
   border: none;
-  box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 8px rgba(255, 176, 32, 0.5);
 }
 
 /* --- Connector Card --- */
 .connector-card {
-  background: rgba(139, 92, 246, 0.06);
-  border: 1px solid rgba(139, 92, 246, 0.2);
+  background: rgba(255, 176, 32, 0.06);
+  border: 1px solid rgba(255, 176, 32, 0.2);
   padding: 0.3rem 0.6rem;
   border-radius: var(--radius-sm);
   display: flex;
@@ -234,7 +234,7 @@ input[type='range']::-moz-range-thumb {
 
 /* --- Theory Banner --- */
 .theory-banner {
-  background: rgba(13, 18, 37, 0.95);
+  background: var(--bg-secondary);
   border-bottom: 1px solid var(--border-color);
   padding: 0.35rem 0.75rem;
   display: flex;
@@ -479,15 +479,15 @@ canvas {
 }
 
 .eng-tab:hover {
-  background: rgba(139, 92, 246, 0.1);
-  border-color: rgba(139, 92, 246, 0.3);
+  background: rgba(255, 176, 32, 0.1);
+  border-color: rgba(255, 176, 32, 0.3);
   color: var(--text-primary);
 }
 
 .eng-tab.active {
-  background: rgba(139, 92, 246, 0.15);
+  background: rgba(255, 176, 32, 0.15);
   border-color: var(--accent-violet);
-  color: #fff;
+  color: var(--text-primary);
   box-shadow: var(--glow-violet);
 }
 
@@ -517,7 +517,7 @@ canvas {
 
 .eng-info h3 {
   font-size: 0.9rem;
-  color: #fff;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
@@ -546,7 +546,7 @@ canvas {
 }
 
 .eng-graph-panel {
-  background: #060a16;
+  background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   padding: 0.5rem;

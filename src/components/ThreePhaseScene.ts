@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import type { BifurcationModel } from '../math/models/BaseModel.js';
+import { viz } from '../core/theme.js';
 
 const ORBIT_POINTS = 400;
 const TRANSIENT = 200;
@@ -33,7 +34,7 @@ export class ThreePhaseScene {
     };
 
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x040714);
+    this.scene.background = new THREE.Color(viz().bg);
 
     this.camera = new THREE.PerspectiveCamera(50, rect.width / rect.height, 0.1, 20);
     this.camera.position.set(2.5, 1.8, 3.0);
@@ -67,7 +68,7 @@ export class ThreePhaseScene {
       opacity: 0.8,
     });
     const pointsMaterial = new THREE.PointsMaterial({
-      color: 0xf43f5e,
+      color: viz().rose,
       size: 0.035,
       transparent: true,
       opacity: 0.9,
@@ -81,7 +82,7 @@ export class ThreePhaseScene {
 
     this.headSphere = new THREE.Mesh(
       new THREE.SphereGeometry(0.06, 16, 16),
-      new THREE.MeshBasicMaterial({ color: 0xffaa00 }),
+      new THREE.MeshBasicMaterial({ color: viz().amber }),
     );
     this.scene.add(this.headSphere);
 
@@ -207,6 +208,17 @@ export class ThreePhaseScene {
 
   private initEvents(): void {
     window.addEventListener('resize', () => this.resize());
+  }
+
+  /** Re-apply theme colors without rebuilding the scene. */
+  refreshTheme(): void {
+    const colors = viz();
+    this.scene.background = new THREE.Color(colors.bg);
+    const pointsMat = this.orbitPointsObj.material as THREE.PointsMaterial;
+    pointsMat.color = new THREE.Color(colors.rose);
+    const headMat = this.headSphere.material as THREE.MeshBasicMaterial;
+    headMat.color = new THREE.Color(colors.amber);
+    this.renderer.render(this.scene, this.camera);
   }
 
   dispose(): void {

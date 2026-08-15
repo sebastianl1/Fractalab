@@ -1,34 +1,87 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
-:root {
-  --bg-primary: #080c18;
-  --bg-secondary: #0d1225;
-  --bg-card: rgba(13, 18, 37, 0.8);
-  --border-color: rgba(255, 255, 255, 0.07);
-  --border-hover: rgba(255, 255, 255, 0.15);
+/* ============================================================
+   DESIGN TOKENS — Observatorio Espacial
+   Dark is the default; [data-theme='light'] overrides.
+   ============================================================ */
 
-  --accent-violet: #8b5cf6;
-  --accent-teal: #06b6d4;
-  --accent-rose: #f43f5e;
-  --accent-amber: #f59e0b;
-  --accent-emerald: #10b981;
+:root,
+[data-theme='dark'] {
+  --bg-primary: #05060a;
+  --bg-secondary: #0c0f18;
+  --bg-card: rgba(12, 15, 24, 0.72);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.16);
 
-  --text-primary: #f1f5f9;
-  --text-secondary: #64748b;
+  /* Solar amber is the primary accent. */
+  --accent: #ffb020;
+  --accent-violet: var(--accent); /* legacy alias */
+  --accent-cyan: #4dd6ff;
+  --accent-teal: var(--accent-cyan); /* legacy alias */
+  --accent-amber: var(--accent);
+  --accent-rose: #ff6b6b;
+  --accent-emerald: #34d399;
 
+  --grad-brand: linear-gradient(120deg, #ffb020, #4dd6ff);
+
+  --text-primary: #f4f1ea;
+  --text-secondary: #9aa3b5;
+
+  --font-display: 'Space Grotesk', 'Inter', -apple-system, 'Segoe UI', sans-serif;
   --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+
+  /* Visualization palette (canvas renderers) */
+  --viz-bg: #07090f;
+  --viz-grid: rgba(255, 255, 255, 0.05);
+  --viz-ink: #aab3c7;
+  --viz-cyan: #4dd6ff;
+  --viz-amber: #ffb020;
+  --viz-rose: #ff6b6b;
+  --viz-emerald: #34d399;
+  --viz-violet: #ffb020;
 
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --glow-violet: 0 0 12px rgba(139, 92, 246, 0.2);
-  --glow-teal: 0 0 12px rgba(6, 182, 212, 0.2);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 10px 36px rgba(0, 0, 0, 0.55);
+  --glow-violet: 0 0 12px rgba(255, 176, 32, 0.22);
+  --glow-teal: 0 0 12px rgba(77, 214, 255, 0.2);
   --transition-fast: 0.15s ease;
   --transition-normal: 0.25s ease;
+}
+
+[data-theme='light'] {
+  --bg-primary: #f7f5f0;
+  --bg-secondary: #ffffff;
+  --bg-card: rgba(255, 255, 255, 0.85);
+  --border-color: rgba(26, 31, 51, 0.1);
+  --border-hover: rgba(26, 31, 51, 0.22);
+
+  --accent: #b26a00;
+  --accent-cyan: #0e7490;
+  --accent-rose: #e11d48;
+  --accent-emerald: #059669;
+
+  --text-primary: #1a1f33;
+  --text-secondary: #5a6276;
+
+  --viz-bg: #fbf9f4;
+  --viz-grid: rgba(26, 31, 51, 0.07);
+  --viz-ink: #5a6276;
+  --viz-cyan: #0e7490;
+  --viz-amber: #b26a00;
+  --viz-rose: #e11d48;
+  --viz-emerald: #059669;
+  --viz-violet: #b26a00;
+
+  --shadow-sm: 0 1px 3px rgba(26, 31, 51, 0.08);
+  --shadow-md: 0 4px 14px rgba(26, 31, 51, 0.1);
+  --shadow-lg: 0 10px 36px rgba(26, 31, 51, 0.14);
+  --glow-violet: 0 0 12px rgba(178, 106, 0, 0.14);
+  --glow-teal: 0 0 12px rgba(14, 116, 144, 0.14);
 }
 
 * {
@@ -55,6 +108,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-size: 16px;
   line-height: 1.5;
+  transition:
+    background-color var(--transition-normal),
+    color var(--transition-normal);
 }
 
 img,

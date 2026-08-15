@@ -36,15 +36,15 @@
 }
 
 .tab-nav-btn:hover {
-  background: rgba(139, 92, 246, 0.1);
-  border-color: rgba(139, 92, 246, 0.3);
+  background: rgba(255, 176, 32, 0.1);
+  border-color: rgba(255, 176, 32, 0.3);
   color: var(--text-primary);
 }
 
 .tab-nav-btn.active {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(6, 182, 212, 0.18));
+  background: linear-gradient(135deg, rgba(255, 176, 32, 0.25), rgba(77, 214, 255, 0.18));
   border-color: var(--accent-violet);
-  color: #fff;
+  color: var(--text-primary);
   box-shadow: var(--glow-violet);
 }
 
@@ -95,8 +95,8 @@
 }
 
 .learn-hero {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(6, 182, 212, 0.08));
-  border: 1px solid rgba(139, 92, 246, 0.25);
+  background: linear-gradient(135deg, rgba(255, 176, 32, 0.12), rgba(77, 214, 255, 0.08));
+  border: 1px solid rgba(255, 176, 32, 0.25);
   border-radius: var(--radius-lg);
   padding: 1.4rem 1.2rem;
   margin-bottom: 1rem;
@@ -107,7 +107,7 @@
 
 .learn-hero h2 {
   font-size: 1.25rem;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .learn-hero p {
@@ -226,7 +226,7 @@
 
 .learn-lesson-head h3 {
   font-size: 1.05rem;
-  color: #fff;
+  color: var(--text-primary);
   margin: 0.2rem 0;
 }
 
@@ -257,8 +257,8 @@
 }
 
 .learn-aside {
-  background: rgba(6, 182, 212, 0.08);
-  border: 1px solid rgba(6, 182, 212, 0.2);
+  background: rgba(77, 214, 255, 0.08);
+  border: 1px solid rgba(77, 214, 255, 0.2);
   border-radius: var(--radius-sm);
   padding: 0.55rem 0.7rem;
   font-size: 0.8rem;
@@ -268,8 +268,8 @@
 
 .learn-keypoints {
   margin-top: 1rem;
-  background: rgba(16, 185, 129, 0.06);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  background: rgba(52, 211, 153, 0.06);
+  border: 1px solid rgba(52, 211, 153, 0.2);
   border-radius: var(--radius-sm);
   padding: 0.6rem 0.8rem;
 }
@@ -305,8 +305,8 @@
 
 .learn-quiz {
   margin-top: 1.2rem;
-  background: rgba(245, 158, 11, 0.06);
-  border: 1px solid rgba(245, 158, 11, 0.22);
+  background: rgba(255, 176, 32, 0.06);
+  border: 1px solid rgba(255, 176, 32, 0.22);
   border-radius: var(--radius-md);
   padding: 0.8rem;
 }
@@ -319,7 +319,7 @@
 
 .learn-quiz-question {
   font-size: 0.85rem;
-  color: #fff;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
@@ -347,12 +347,12 @@
 }
 
 .learn-quiz-option.correct {
-  background: rgba(16, 185, 129, 0.15);
+  background: rgba(52, 211, 153, 0.15);
   border-color: var(--accent-emerald);
 }
 
 .learn-quiz-option.incorrect {
-  background: rgba(244, 63, 94, 0.12);
+  background: rgba(255, 107, 107, 0.12);
   border-color: var(--accent-rose);
 }
 
@@ -411,8 +411,8 @@
 }
 
 .examples-hero {
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(139, 92, 246, 0.08));
-  border: 1px solid rgba(6, 182, 212, 0.25);
+  background: linear-gradient(135deg, rgba(77, 214, 255, 0.12), rgba(255, 176, 32, 0.08));
+  border: 1px solid rgba(77, 214, 255, 0.25);
   border-radius: var(--radius-lg);
   padding: 1.2rem;
   margin-bottom: 1rem;
@@ -420,7 +420,7 @@
 
 .examples-hero h2 {
   font-size: 1.2rem;
-  color: #fff;
+  color: var(--text-primary);
   margin-bottom: 0.3rem;
 }
 
@@ -480,7 +480,7 @@
 
 .example-card h4 {
   font-size: 0.9rem;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .example-card p {
@@ -511,8 +511,8 @@
 .example-badge {
   font-size: 0.65rem;
   color: var(--accent-teal);
-  background: rgba(6, 182, 212, 0.08);
-  border: 1px solid rgba(6, 182, 212, 0.2);
+  background: rgba(77, 214, 255, 0.08);
+  border: 1px solid rgba(77, 214, 255, 0.2);
   padding: 0.2rem 0.4rem;
   border-radius: var(--radius-sm);
 }
@@ -532,8 +532,8 @@
 }
 
 .video-hero {
-  background: linear-gradient(135deg, rgba(244, 63, 94, 0.12), rgba(139, 92, 246, 0.08));
-  border: 1px solid rgba(244, 63, 94, 0.25);
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.12), rgba(255, 176, 32, 0.08));
+  border: 1px solid rgba(255, 107, 107, 0.25);
   border-radius: var(--radius-lg);
   padding: 1.2rem;
   margin-bottom: 1rem;
@@ -541,7 +541,7 @@
 
 .video-hero h2 {
   font-size: 1.2rem;
-  color: #fff;
+  color: var(--text-primary);
   margin-bottom: 0.3rem;
 }
 
@@ -635,7 +635,7 @@
 
 .video-card.active {
   border-color: var(--accent-rose);
-  background: rgba(244, 63, 94, 0.08);
+  background: rgba(255, 107, 107, 0.08);
 }
 
 .video-card:disabled {
@@ -674,8 +674,8 @@
 }
 
 .resources-hero {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(16, 185, 129, 0.08));
-  border: 1px solid rgba(139, 92, 246, 0.25);
+  background: linear-gradient(135deg, rgba(255, 176, 32, 0.12), rgba(52, 211, 153, 0.08));
+  border: 1px solid rgba(255, 176, 32, 0.25);
   border-radius: var(--radius-lg);
   padding: 1.2rem;
   margin-bottom: 1rem;
@@ -683,7 +683,7 @@
 
 .resources-hero h2 {
   font-size: 1.2rem;
-  color: #fff;
+  color: var(--text-primary);
   margin-bottom: 0.3rem;
 }
 
