@@ -34,17 +34,15 @@
 
       <!-- Active Model Selector -->
       <div class="model-selector-group">
-        <label for="select-model" class="control-label">Modelo Matemático:</label>
-        <select id="select-model" class="model-select">
-          <option value="logistic">Mapa Logístico: x_{n+1} = r·x·(1-x)</option>
-          <option value="sine">Mapa Seno: x_{n+1} = r·sin(πx)</option>
-          <option value="quadratic">Mapa Cuadrático: x_{n+1} = r - x²</option>
-          <option value="exponential">Mapa Exponencial: x_{n+1} = r·e⁻ˣ</option>
-          <option value="polynomial">Polinómico Generativo: x_{n+1} = r·x·(1-xᵏ)</option>
-        </select>
+        <label for="select-model" class="control-label" data-i18n="header.model"
+          >Modelo Matemático:</label
+        >
+        <select id="select-model" class="model-select"></select>
 
         <div id="poly-k-container" class="poly-k-group" style="display: none">
-          <label for="select-poly-k" class="control-label">Grado k:</label>
+          <label for="select-poly-k" class="control-label" data-i18n="header.degree"
+            >Grado k:</label
+          >
           <select id="select-poly-k">
             <option value="2">k = 2</option>
             <option value="3" selected>k = 3</option>
@@ -55,210 +53,291 @@
       </div>
 
       <div class="nav-actions">
+        <button id="btn-lang" class="btn" title="Idioma / Language">ES | EN</button>
         <button id="btn-audio" class="btn">
           <span id="audio-icon">🔊</span>
-          <span id="audio-text">Sonificar</span>
+          <span id="audio-text" data-i18n="header.audio">Sonificar</span>
         </button>
-        <button id="btn-exercises" class="btn btn-accent"><span>🎯</span> Ejercicios</button>
+        <button id="btn-exercises" class="btn btn-accent">
+          <span>🎯</span> <span data-i18n="header.exercises">Ejercicios</span>
+        </button>
         <button id="btn-theory" class="btn btn-primary">
-          <span>📖</span> Teoría & Isomorfismo
+          <span>📖</span> <span data-i18n="header.theory">Teoría & Isomorfismo</span>
         </button>
       </div>
     </header>
 
-    <!-- Interactive Control Bar & Isomorphism Connector -->
-    <div class="control-bar">
-      <div class="control-group">
-        <label class="control-label" for="slider-r">Parámetro r:</label>
-        <input
-          type="range"
-          id="slider-r"
-          min="1.0"
-          max="4.0"
-          step="0.0001"
-          value="3.0"
-          style="width: 210px"
-        />
-        <span id="label-r-val" class="font-mono label-highlight">3.0000</span>
-      </div>
+    <!-- Tab Navigation -->
+    <nav class="tab-nav" id="tab-nav" aria-label="Navegación principal">
+      <button class="tab-nav-btn active" data-view-link="lab">🧪 <span>Laboratorio</span></button>
+      <button class="tab-nav-btn" data-view-link="aprende">📚 <span>Aprende</span></button>
+      <button class="tab-nav-btn" data-view-link="ejemplos">🖼️ <span>Ejemplos</span></button>
+      <button class="tab-nav-btn" data-view-link="videos">🎬 <span>Videos</span></button>
+      <button class="tab-nav-btn" data-view-link="recursos">📖 <span>Recursos</span></button>
+    </nav>
 
-      <!-- Dynamic r <-> c Isomorphism Connector Card -->
-      <div class="connector-card">
-        <span class="connector-icon">🔗</span>
-        <span class="connector-text">
-          Isomorfismo:
-          <strong id="connector-r-text" class="font-mono">r = 3.0000</strong>
-          <span class="arrow">⟷</span>
-          <strong id="connector-c-text" class="font-mono" style="color: var(--accent-rose)"
-            >c = -0.7500</strong
-          >
-        </span>
-        <div id="connector-latex" class="connector-formula"></div>
-      </div>
-
-      <div class="control-group">
-        <label class="control-label" for="select-palette">Paleta Mandelbrot:</label>
-        <select id="select-palette">
-          <option value="0">Neon Cyberpunk</option>
-          <option value="1">Fuego Ámbar</option>
-          <option value="2">Nebulosa Cósmica</option>
-          <option value="3">Azul Eléctrico</option>
-        </select>
-      </div>
-
-      <div class="control-group">
-        <label class="control-label">
-          <input type="checkbox" id="check-lyapunov" checked />
-          Lyapunov (λ)
-        </label>
-      </div>
-
-      <button id="btn-reset" class="btn" style="margin-left: auto">
-        <span>🔄</span> Reiniciar Vistas
-      </button>
-    </div>
-
-    <!-- Theoretical LaTeX Banner -->
-    <section class="theory-banner">
-      <div class="theory-banner-item">
-        <span class="banner-tag">Ecuación Activa:</span>
-        <span id="latex-equation" class="latex-render"></span>
-      </div>
-      <div class="theory-banner-item">
-        <span class="banner-tag">Derivada f'(x):</span>
-        <span id="latex-derivative" class="latex-render"></span>
-      </div>
-      <div class="theory-banner-principle">
-        💡 <strong>Principios:</strong> 1. <em>Caos Universal en Múltiples Funciones.</em> | 2.
-        <em>Mandelbrot es un "Atlas" de bifurcaciones cuadráticas.</em>
-      </div>
-    </section>
-
-    <!-- Main Grid Dashboard (Dual HD Views + 3D Phase Space) -->
-    <main class="app-container">
-      <!-- Panel 1: HD Bifurcation Canvas (LEFT) -->
-      <section class="canvas-panel">
-        <div class="panel-header">
-          <span class="panel-title"> <span>📈</span> Diagrama de Bifurcación HD (r vs x) </span>
-          <span class="panel-sub">Arrastra la línea vertical para explorar el parámetro r</span>
-          <button
-            class="btn btn-fullscreen"
-            data-fullscreen="canvas-bifurcation"
-            title="Pantalla completa"
-          >
-            ⛶
-          </button>
+    <!-- ======================= VIEW: LAB ======================= -->
+    <div data-view="lab" class="active">
+      <!-- Interactive Control Bar & Isomorphism Connector -->
+      <div class="control-bar">
+        <div class="control-group">
+          <label class="control-label" for="slider-r" data-i18n="ctrl.r">Parámetro r:</label>
+          <input
+            type="range"
+            id="slider-r"
+            min="1.0"
+            max="4.0"
+            step="0.0001"
+            value="3.0"
+            style="width: 210px"
+          />
+          <span id="label-r-val" class="font-mono label-highlight">3.0000</span>
         </div>
-        <div class="panel-body">
-          <canvas id="canvas-bifurcation"></canvas>
-        </div>
-      </section>
 
-      <!-- Panel 2: HD Mandelbrot Canvas (RIGHT) -->
-      <section class="canvas-panel">
-        <div class="panel-header">
-          <span class="panel-title">
-            <span>🌀</span> Conjunto de Mandelbrot & Eje Real Isomórfico (c ∈ [-2.0, 0.25])
+        <!-- Dynamic r <-> c Isomorphism Connector Card -->
+        <div class="connector-card">
+          <span class="connector-icon">🔗</span>
+          <span class="connector-text" data-i18n="ctrl.iso">
+            Isomorfismo:
+            <strong id="connector-r-text" class="font-mono">r = 3.0000</strong>
+            <span class="arrow">⟷</span>
+            <strong id="connector-c-text" class="font-mono" style="color: var(--accent-rose)">
+              c = -0.7500</strong
+            >
           </span>
-          <span class="panel-sub">Haz clic para seleccionar c o usa la rueda para Zoom</span>
-          <button
-            class="btn btn-fullscreen"
-            data-fullscreen="canvas-mandelbrot"
-            title="Pantalla completa"
+          <div id="connector-latex" class="connector-formula"></div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label" for="select-palette" data-i18n="ctrl.palette"
+            >Paleta Mandelbrot:</label
           >
-            ⛶
-          </button>
+          <select id="select-palette">
+            <option value="0">Neon Cyberpunk</option>
+            <option value="1">Fuego Ámbar</option>
+            <option value="2">Nebulosa Cósmica</option>
+            <option value="3">Azul Eléctrico</option>
+          </select>
         </div>
-        <div class="panel-body">
-          <canvas id="canvas-mandelbrot"></canvas>
-        </div>
-      </section>
 
-      <!-- Panel 3: 3D Phase Space Attractor Projection Canvas -->
-      <section class="canvas-panel">
-        <div class="panel-header">
-          <span class="panel-title">
-            <span>🧊</span> Espacio de Fases Tridimensional 3D (x<sub>n</sub>, x<sub>n+1</sub>,
-            x<sub>n+2</sub>)
-          </span>
-          <span class="panel-sub">Arrastra con el mouse para rotar en 3D</span>
-          <button
-            class="btn btn-fullscreen"
-            data-fullscreen="canvas-3d-phase"
-            title="Pantalla completa"
-          >
-            ⛶
-          </button>
+        <div class="control-group">
+          <label class="control-label">
+            <input type="checkbox" id="check-lyapunov" checked />
+            <span data-i18n="ctrl.lyapunov">Lyapunov (λ)</span>
+          </label>
         </div>
-        <div class="panel-body">
-          <canvas id="canvas-3d-phase"></canvas>
-        </div>
-      </section>
 
-      <!-- Panel 4: Real-time Inspector & Metrics Panel -->
-      <section class="canvas-panel">
-        <div class="panel-header">
-          <span class="panel-title"> <span>📊</span> Inspector Matemático & Métricas de Caos </span>
-        </div>
-        <div id="inspector-container"></div>
-      </section>
-
-      <!-- Panel 5: Cobweb Phase Plot Canvas -->
-      <section class="canvas-panel grid-span-full">
-        <div class="panel-header">
-          <span class="panel-title">
-            <span>🕸️</span> Diagrama de Telaraña (Cobweb Plot: x<sub>n+1</sub> = f(x<sub>n</sub>))
-          </span>
-          <span class="panel-sub">Arrastra la condición inicial x₀ en la base</span>
-          <button
-            class="btn btn-fullscreen"
-            data-fullscreen="canvas-cobweb"
-            title="Pantalla completa"
-          >
-            ⛶
-          </button>
-        </div>
-        <div class="panel-body">
-          <canvas id="canvas-cobweb"></canvas>
-        </div>
-      </section>
-    </main>
-
-    <!-- Real Engineering Applications Panel (Cases with Graphs) -->
-    <section class="engineering-section">
-      <div class="engineering-header">
-        <h2>🏭 Aplicaciones Reales en Ingeniería</h2>
-        <p>
-          Casos prácticos de dinámicas no lineales en sistemas físicos, eléctricos e informáticos
-          reales.
-        </p>
+        <button id="btn-reset" class="btn" style="margin-left: auto">
+          <span>🔄</span> <span data-i18n="ctrl.reset">Reiniciar Vistas</span>
+        </button>
       </div>
 
-      <div class="engineering-tabs" id="engineering-tabs">
-        <button class="eng-tab active" data-case="electrical">⚡ Eléctrica</button>
-        <button class="eng-tab" data-case="process">🧪 Procesos</button>
-        <button class="eng-tab" data-case="mechanical">⚙️ Mecánica</button>
-        <button class="eng-tab" data-case="environmental">🌱 Ambiental</button>
-        <button class="eng-tab" data-case="computer">💻 Informática</button>
-        <button class="eng-tab" data-case="telecom">📡 Telecom</button>
-      </div>
+      <!-- Theoretical LaTeX Banner -->
+      <section class="theory-banner">
+        <div class="theory-banner-item">
+          <span class="banner-tag" data-i18n="banner.equation">Ecuación Activa:</span>
+          <span id="latex-equation" class="latex-render"></span>
+        </div>
+        <div class="theory-banner-item">
+          <span class="banner-tag" data-i18n="banner.derivative">Derivada f'(x):</span>
+          <span id="latex-derivative" class="latex-render"></span>
+        </div>
+        <div class="theory-banner-principle" data-i18n="banner.principles">
+          💡 <strong>Principios:</strong> 1. <em>Caos Universal en Múltiples Funciones.</em> | 2.
+          <em>Mandelbrot es un "Atlas" de bifurcaciones cuadráticas.</em>
+        </div>
+      </section>
 
-      <div class="engineering-content-card">
-        <div class="eng-info">
-          <h3 id="eng-title">⚡ Ingeniería Eléctrica</h3>
-          <h4 id="eng-subtitle">Convertidores DC-DC Buck/Boost & Osciladores RLC No Lineales</h4>
-          <p id="eng-explanation" class="eng-desc">Cargando caso...</p>
-          <div class="eng-equation-box">
-            <span>Modelo LaTeX:</span>
-            <span id="eng-latex-eq"></span>
+      <!-- Main Grid Dashboard (Dual HD Views + 3D Phase Space) -->
+      <main class="app-container">
+        <!-- Panel 1: HD Bifurcation Canvas (LEFT) -->
+        <section class="canvas-panel">
+          <div class="panel-header">
+            <span class="panel-title" data-i18n="panel.bifurcation"
+              ><span>📈</span> Diagrama de Bifurcación HD (r vs x)</span
+            >
+            <span class="panel-sub" data-i18n="panel.bifurcation.sub"
+              >Arrastra la línea vertical para explorar el parámetro r</span
+            >
+            <button
+              class="btn btn-fullscreen"
+              data-fullscreen="canvas-bifurcation"
+              title="Pantalla completa"
+            >
+              ⛶
+            </button>
+          </div>
+          <div class="panel-body">
+            <canvas id="canvas-bifurcation"></canvas>
+          </div>
+        </section>
+
+        <!-- Panel 2: HD Mandelbrot Canvas (RIGHT) -->
+        <section class="canvas-panel">
+          <div class="panel-header">
+            <span class="panel-title" data-i18n="panel.mandelbrot"
+              ><span>🌀</span> Conjunto de Mandelbrot & Eje Real Isomórfico (c ∈ [-2.0, 0.25])</span
+            >
+            <span class="panel-sub" data-i18n="panel.mandelbrot.sub"
+              >Haz clic para seleccionar c o usa la rueda para Zoom</span
+            >
+            <button
+              class="btn btn-fullscreen"
+              data-fullscreen="canvas-mandelbrot"
+              title="Pantalla completa"
+            >
+              ⛶
+            </button>
+          </div>
+          <div class="panel-body">
+            <canvas id="canvas-mandelbrot"></canvas>
+          </div>
+        </section>
+
+        <!-- Panel 3: 3D Phase Space Attractor Projection Canvas -->
+        <section class="canvas-panel">
+          <div class="panel-header">
+            <span class="panel-title" data-i18n="panel.phasespace"
+              ><span>🧊</span> Espacio de Fases Tridimensional 3D (x<sub>n</sub>, x<sub>n+1</sub>,
+              x<sub>n+2</sub>)</span
+            >
+            <span class="panel-sub" data-i18n="panel.phasespace.sub"
+              >Arrastra con el mouse para rotar en 3D</span
+            >
+            <button
+              class="btn btn-fullscreen"
+              data-fullscreen="canvas-3d-phase"
+              title="Pantalla completa"
+            >
+              ⛶
+            </button>
+          </div>
+          <div class="panel-body">
+            <canvas id="canvas-3d-phase"></canvas>
+          </div>
+        </section>
+
+        <!-- Panel 4: Real-time Inspector & Metrics Panel -->
+        <section class="canvas-panel">
+          <div class="panel-header">
+            <span class="panel-title" data-i18n="panel.inspector"
+              ><span>📊</span> Inspector Matemático & Métricas de Caos</span
+            >
+          </div>
+          <div id="inspector-container"></div>
+        </section>
+
+        <!-- Panel 5: Cobweb Phase Plot Canvas -->
+        <section class="canvas-panel grid-span-full">
+          <div class="panel-header">
+            <span class="panel-title" data-i18n="panel.cobweb"
+              ><span>🕸️</span> Diagrama de Telaraña (Cobweb Plot: x<sub>n+1</sub> =
+              f(x<sub>n</sub>))</span
+            >
+            <span class="panel-sub" data-i18n="panel.cobweb.sub"
+              >Arrastra la condición inicial x₀ en la base</span
+            >
+            <button
+              class="btn btn-fullscreen"
+              data-fullscreen="canvas-cobweb"
+              title="Pantalla completa"
+            >
+              ⛶
+            </button>
+          </div>
+          <div class="panel-body">
+            <canvas id="canvas-cobweb"></canvas>
+          </div>
+        </section>
+      </main>
+
+      <!-- Real Engineering Applications Panel (Cases with Graphs) -->
+      <section class="engineering-section">
+        <div class="engineering-header">
+          <h2 data-i18n="eng.title">🏭 Aplicaciones Reales en Ingeniería</h2>
+          <p data-i18n="eng.subtitle">
+            Casos prácticos de dinámicas no lineales en sistemas físicos, eléctricos e informáticos
+            reales.
+          </p>
+        </div>
+
+        <div class="engineering-tabs" id="engineering-tabs">
+          <button class="eng-tab active" data-case="electrical" data-i18n="eng.tab.electrical">
+            ⚡ Eléctrica
+          </button>
+          <button class="eng-tab" data-case="process" data-i18n="eng.tab.process">
+            🧪 Procesos
+          </button>
+          <button class="eng-tab" data-case="mechanical" data-i18n="eng.tab.mechanical">
+            ⚙️ Mecánica
+          </button>
+          <button class="eng-tab" data-case="environmental" data-i18n="eng.tab.environmental">
+            🌱 Ambiental
+          </button>
+          <button class="eng-tab" data-case="computer" data-i18n="eng.tab.computer">
+            💻 Informática
+          </button>
+          <button class="eng-tab" data-case="telecom" data-i18n="eng.tab.telecom">
+            📡 Telecom
+          </button>
+        </div>
+
+        <div class="engineering-content-card">
+          <div class="eng-info">
+            <h3 id="eng-title">⚡ Ingeniería Eléctrica</h3>
+            <h4 id="eng-subtitle">Convertidores DC-DC Buck/Boost & Osciladores RLC No Lineales</h4>
+            <p id="eng-explanation" class="eng-desc">Cargando caso...</p>
+            <div class="eng-equation-box">
+              <span>Modelo LaTeX:</span>
+              <span id="eng-latex-eq"></span>
+            </div>
+          </div>
+          <div class="eng-graph-panel">
+            <div class="graph-title font-mono" data-i18n="eng.graph">
+              Forma de Onda Temporal / Respuesta de Fases HD
+            </div>
+            <canvas id="canvas-engineering" width="500" height="220"></canvas>
           </div>
         </div>
-        <div class="eng-graph-panel">
-          <div class="graph-title font-mono">Forma de Onda Temporal / Respuesta de Fases HD</div>
-          <canvas id="canvas-engineering" width="500" height="220"></canvas>
-        </div>
-      </div>
-    </section>
+      </section>
+    </div>
+    <!-- /VIEW: LAB -->
+
+    <!-- ======================= VIEW: APRENDE ======================= -->
+    <div data-view="aprende" class="content-view">
+      <section id="learn-view" class="learn-view"></section>
+    </div>
+
+    <!-- ======================= VIEW: EJEMPLOS ======================= -->
+    <div data-view="ejemplos" class="content-view">
+      <section class="view-placeholder">
+        <h2>🖼️ Ejemplos</h2>
+        <p>
+          Galería de ejemplos resueltos y casos de estudio que se añadirán en la próxima iteración.
+        </p>
+      </section>
+    </div>
+
+    <!-- ======================= VIEW: VIDEOS ======================= -->
+    <div data-view="videos" class="content-view">
+      <section class="view-placeholder">
+        <h2 data-i18n="videos.title">🎬 Videolecciones</h2>
+        <p data-i18n="videos.subtitle">
+          Próximamente: videolecciones guiadas paso a paso. Por ahora puedes explorar los módulos
+          interactivos.
+        </p>
+      </section>
+    </div>
+
+    <!-- ======================= VIEW: RECURSOS ======================= -->
+    <div data-view="recursos" class="content-view">
+      <section class="view-placeholder">
+        <h2 data-i18n="resources.title">📖 Recursos y Bibliografía</h2>
+        <p data-i18n="resources.subtitle">
+          Fuentes académicas y referencias para profundizar en dinámica no lineal y caos.
+        </p>
+      </section>
+    </div>
 
     <!-- Guided Student Exercises Modal Dialog -->
     <div id="modal-exercises-backdrop" class="modal-backdrop"></div>

@@ -1,4 +1,8 @@
 import { appState } from './core/AppState.js';
+import { i18n, applyUIStrings } from './core/i18n.js';
+import { parseHash, navigate } from './core/router.js';
+import type { ViewId } from './core/router.js';
+import { applyRouteToState, syncRouteFromState } from './core/urlState.js';
 import { globalModelRegistry } from './math/models/ModelRegistry.js';
 import { MandelbrotShader } from './components/MandelbrotShader.js';
 import { BifurcationCanvas } from './components/BifurcationCanvas.js';
@@ -9,6 +13,7 @@ import { InspectorPanel } from './components/InspectorPanel.js';
 import { TheoryModal } from './components/TheoryModal.js';
 import { EngineeringCasePanel } from './components/EngineeringCasePanel.js';
 import { GuidedExercisesPanel } from './components/GuidedExercisesPanel.js';
+import { LearnView } from './components/LearnView.js';
 import { renderLatex } from './math/latexHelper.js';
 
 function $<T extends HTMLElement = HTMLElement>(id: string): T {
@@ -45,6 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const connectorRText = $<HTMLElement>('connector-r-text');
   const connectorCText = $<HTMLElement>('connector-c-text');
   const connectorLatex = $<HTMLElement>('connector-latex');
+  const btnLang = $<HTMLButtonElement>('btn-lang');
+  const learnContainer = $<HTMLElement>('learn-view');
 
   const inspector = new InspectorPanel(inspectorContainer);
   const sonifier = new Sonifier();
@@ -82,6 +89,13 @@ document.addEventListener('DOMContentLoaded', () => {
       appState.r = targetR;
     },
   );
+
+  const learnView = new LearnView(learnContainer, (modelId, r) => {
+    appState.modelId = modelId;
+    appState.r = r;
+    navigate('lab');
+    syncRouteFromState();
+  });
 
   // Populate the model selector dynamically from the registry.
   const modelOptions = globalModelRegistry.list();
@@ -139,6 +153,44 @@ document.addEventListener('DOMContentLoaded', () => {
       syncUI();
     });
   }
+
+  // ---- Tab routing -------------------------------------------------------
+  function showView(view: ViewId): void {
+    document.querySelectorAll<HTMLElement>('[data-view]').forEach((el) => {
+      el.classList.toggle('active', el.dataset.view === view);
+    });
+    document.querySelectorAll<HTMLElement>('[data-view-link]').forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.viewLink === view);
+    });
+    if (view === 'lab') {
+      setTimeout(handleResize, 60);
+    } else if (view === 'aprende') {
+      learnView.render(i18n.lang);
+    }
+  }
+
+  function handleRouteChange(): void {
+    const route = parseHash();
+    showView(route.view);
+    applyRouteToState();
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-view-link]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const view = btn.dataset.viewLink as ViewId | undefined;
+      if (view) navigate(view);
+    });
+  });
+
+  // ---- Language ----------------------------------------------------------
+  btnLang.addEventListener('click', () => i18n.toggle());
+
+  i18n.onLangChange(() => {
+    applyUIStrings();
+    btnLang.textContent = i18n.lang.toUpperCase();
+    if (sonifier.isPlaying) audioText.textContent = i18n.t('header.audio.playing');
+    learnView.setLang(i18n.lang);
+  });
 
   selectModel.addEventListener('change', (e) => {
     appState.modelId = (e.target as HTMLSelectElement).value;
@@ -225,8 +277,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Reflect state back into the URL (lab view only), debounced.
+  let routeRafId: number | null = null;
+  const scheduleRouteSync = (): void => {
+    if (routeRafId !== null) return;
+    routeRafId = requestAnimationFrame(() => {
+      routeRafId = null;
+      syncRouteFromState();
+    });
+  };
+
   appState.on('modelChange', () => scheduleSyncUI());
   appState.on('rChange', () => scheduleSyncUI());
+  appState.on('rChange', () => scheduleRouteSync());
+  appState.on('modelChange', () => scheduleRouteSync());
+  appState.on('paletteChange', () => scheduleRouteSync());
+
+  window.addEventListener('hashchange', handleRouteChange);
+
+  // Apply URL params and current language before the first paint.
+  applyRouteToState();
+  applyUIStrings();
+  btnLang.textContent = i18n.lang.toUpperCase();
+  handleRouteChange();
 
   syncUI();
   setTimeout(handleResize, 100);
