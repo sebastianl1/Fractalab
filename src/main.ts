@@ -9,6 +9,7 @@ import { BifurcationCanvas } from './components/BifurcationCanvas.js';
 import { CobwebCanvas } from './components/CobwebCanvas.js';
 import { ThreePhaseScene } from './components/ThreePhaseScene.js';
 import { Sonifier } from './components/Sonifier.js';
+import type { SonifyMode } from './components/Sonifier.js';
 import { InspectorPanel } from './components/InspectorPanel.js';
 import { TheoryModal } from './components/TheoryModal.js';
 import { EngineeringCasePanel } from './components/EngineeringCasePanel.js';
@@ -60,6 +61,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const examplesContainer = $<HTMLElement>('examples-view');
   const videosContainer = $<HTMLElement>('videos-view');
   const resourcesContainer = $<HTMLElement>('resources-view');
+  const selectSoundMode = $<HTMLSelectElement>('select-sound-mode');
+  const sliderTempo = $<HTMLInputElement>('slider-tempo');
+  const labelNote = $<HTMLElement>('label-note');
 
   const inspector = new InspectorPanel(inspectorContainer);
   const sonifier = new Sonifier();
@@ -260,6 +264,18 @@ document.addEventListener('DOMContentLoaded', () => {
     audioText.textContent = isPlaying ? 'Pausar Sonido' : 'Sonificar Órbita';
     audioIcon.textContent = isPlaying ? '⏸️' : '🔊';
     btnAudio.classList.toggle('btn-primary', isPlaying);
+  });
+
+  sonifier.onNotePlayed = (note) => {
+    labelNote.textContent = note;
+  };
+
+  selectSoundMode.addEventListener('change', (e) => {
+    sonifier.mode = (e.target as HTMLSelectElement).value as SonifyMode;
+  });
+
+  sliderTempo.addEventListener('input', (e) => {
+    sonifier.setTempo(parseInt((e.target as HTMLInputElement).value, 10));
   });
 
   btnTheory.addEventListener('click', () => theoryModal.open());

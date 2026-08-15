@@ -161,6 +161,27 @@
           </label>
         </div>
 
+        <div class="control-group">
+          <label class="control-label" for="select-sound-mode" data-i18n="ctrl.soundMode"
+            >Sonido:</label
+          >
+          <select id="select-sound-mode">
+            <option value="scale" data-i18n="ctrl.mode.scale">Escala pentatónica</option>
+            <option value="glissando" data-i18n="ctrl.mode.glissando">Glissando continuo</option>
+          </select>
+          <label class="control-label" for="slider-tempo" data-i18n="ctrl.tempo">Tempo:</label>
+          <input
+            type="range"
+            id="slider-tempo"
+            min="80"
+            max="320"
+            step="10"
+            value="140"
+            style="width: 90px"
+          />
+          <span id="label-note" class="font-mono label-highlight">—</span>
+        </div>
+
         <button id="btn-reset" class="btn" style="margin-left: auto">
           <span>🔄</span> <span data-i18n="ctrl.reset">Reiniciar Vistas</span>
         </button>

@@ -24,6 +24,10 @@ const es: Dict = {
   'ctrl.palette': 'Paleta Mandelbrot:',
   'ctrl.lyapunov': 'Lyapunov (λ)',
   'ctrl.reset': 'Reiniciar Vistas',
+  'ctrl.soundMode': 'Sonido:',
+  'ctrl.mode.scale': 'Escala pentatónica',
+  'ctrl.mode.glissando': 'Glissando continuo',
+  'ctrl.tempo': 'Tempo:',
 
   // Banner teórico
   'banner.equation': 'Ecuación Activa:',
@@ -106,6 +110,10 @@ const en: Dict = {
   'ctrl.palette': 'Mandelbrot Palette:',
   'ctrl.lyapunov': 'Lyapunov (λ)',
   'ctrl.reset': 'Reset Views',
+  'ctrl.soundMode': 'Sound:',
+  'ctrl.mode.scale': 'Pentatonic scale',
+  'ctrl.mode.glissando': 'Continuous glissando',
+  'ctrl.tempo': 'Tempo:',
 
   'banner.equation': 'Active Equation:',
   'banner.derivative': "Derivative f'(x):",
