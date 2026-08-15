@@ -6,6 +6,24 @@ y el proyecto usa [Conventional Commits](https://www.conventionalcommits.org/).
 
 ## [En desarrollo]
 
+### Correcciones — Funcionalidad del laboratorio
+- **Se elimina el reveal que ocultaba el dashboard**: los diagramas son
+  siempre visibles e interactivos desde el primer render (antes quedaban
+  invisibles con `opacity:0`/`clip-path` y sin eventos de zoom).
+- **Sin parpadeo al interactuar**: el diagrama de bifurcación conserva la
+  imagen previa (escalada) mientras el worker recalcula; se reemplaza solo
+  cuando llega el resultado.
+- Se retira el módulo de scroll-reveal y el iris-in del laboratorio.
+
+### Refinamiento — Editorial sobrio (sobre AETHERION)
+- Paleta disciplinada: oro `#E8B84B`, cian `#7FD8F0`, violeta `#8E7CC3`,
+  rosa `#F16A7A`, verde `#43D1A0` sobre `#070B18`; un acento por zona.
+- Dock orbital sobrio: glifos más pequeños, etiquetas legibles, anillo
+  sutil. Brackets de esquina y scanline muy tenues. Botones con corte de 6px.
+- Hero editorial con orrería refinada (más pequeña, opacidad contenida).
+- Decoración reducida: menos estrellas, glifos y constelaciones, nebulosas
+  suaves.
+
 ### Rediseño — AETHERION: Galaxia Matemática (nuevo desde cero)
 - **UI reconstruida por completo**: se sustituye el sistema previo por una
   identidad "observatorio espacial" con implementación matemática.

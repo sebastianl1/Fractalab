@@ -3,7 +3,6 @@ import { i18n, applyUIStrings } from './core/i18n.js';
 import { parseHash, navigate } from './core/router.js';
 import type { ViewId } from './core/router.js';
 import { applyRouteToState, syncRouteFromState } from './core/urlState.js';
-import { initReveals } from './core/reveal.js';
 import { initOrrery } from './core/orrery.js';
 import { globalModelRegistry } from './math/models/ModelRegistry.js';
 import { MandelbrotShader } from './components/MandelbrotShader.js';
@@ -369,7 +368,6 @@ document.addEventListener('DOMContentLoaded', () => {
   applyUIStrings();
   btnLang.textContent = i18n.lang.toUpperCase();
   handleRouteChange();
-  initReveals();
   initOrrery();
 
   syncUI();

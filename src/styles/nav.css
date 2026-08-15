@@ -77,13 +77,13 @@
   position: absolute;
   left: 0.6rem;
   right: 0.6rem;
-  top: 15px;
+  top: 14px;
   height: 1px;
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(160, 180, 255, 0.22) 12%,
-    rgba(160, 180, 255, 0.22) 88%,
+    rgba(180, 200, 255, 0.14) 12%,
+    rgba(180, 200, 255, 0.14) 88%,
     transparent
   );
 }
@@ -93,13 +93,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 3px;
   background: transparent;
   border: none;
   cursor: pointer;
   font-family: var(--font-mono);
   color: var(--text-dim);
-  padding: 0.2rem 0.3rem;
+  padding: 0.2rem 0.35rem;
   min-width: 0;
   transition: color var(--t-fast);
   white-space: nowrap;
@@ -107,7 +107,7 @@
 
 .dock-glyph {
   font-family: var(--font-display);
-  font-size: 1.05rem;
+  font-size: 0.92rem;
   font-weight: 600;
   line-height: 1;
   transition:
@@ -117,25 +117,21 @@
 }
 
 .dock-label {
-  font-size: 0.58rem;
+  font-size: 0.62rem;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  opacity: 0.7;
+  letter-spacing: 0.08em;
+  opacity: 0.78;
 }
 
 .tab-nav-btn:hover .dock-glyph {
-  transform: translateY(-1px);
-  text-shadow: 0 0 12px rgba(77, 216, 255, 0.5);
   color: var(--cyan);
 }
 
-/* Active star + orbit ring */
+/* Active star + subtle orbit ring */
 .tab-nav-btn.active .dock-glyph {
   color: var(--gold);
-  text-shadow:
-    0 0 16px rgba(246, 196, 69, 0.75),
-    0 0 34px rgba(246, 196, 69, 0.4);
-  transform: scale(1.15);
+  text-shadow: 0 0 12px rgba(232, 184, 75, 0.45);
+  transform: scale(1.08);
 }
 
 .tab-nav-btn.active .dock-label {
@@ -146,12 +142,12 @@
 .tab-nav-btn.active::after {
   content: '';
   position: absolute;
-  top: 5px;
+  top: 4px;
   left: 50%;
-  width: 26px;
-  height: 13px;
+  width: 24px;
+  height: 12px;
   transform: translateX(-50%) rotate(-12deg);
-  border: 1px solid rgba(77, 216, 255, 0.75);
+  border: 1px solid rgba(127, 216, 240, 0.55);
   border-radius: 50%;
   pointer-events: none;
   animation: orbit-pulse 4s ease-in-out infinite;
@@ -160,12 +156,12 @@
 @keyframes orbit-pulse {
   0%,
   100% {
-    opacity: 0.35;
+    opacity: 0.3;
     transform: translateX(-50%) rotate(-12deg) scale(1);
   }
   50% {
-    opacity: 1;
-    transform: translateX(-50%) rotate(-12deg) scale(1.12);
+    opacity: 0.9;
+    transform: translateX(-50%) rotate(-12deg) scale(1.08);
   }
 }
 
@@ -173,7 +169,6 @@
 .tab-nav-btn:has(+ .active) .dock-glyph,
 .tab-nav-btn.active + .tab-nav-btn .dock-glyph {
   color: var(--cyan);
-  text-shadow: 0 0 12px rgba(77, 216, 255, 0.5);
 }
 
 /* ---- Lang toggle ---- */
@@ -187,7 +182,7 @@
   border: 1px solid var(--border);
   padding: 0.34rem 0.6rem;
   cursor: pointer;
-  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
   transition:
     color var(--t-fast),
     border-color var(--t-fast);

@@ -303,8 +303,6 @@ export class BifurcationCanvas {
   resetZoom(): void {
     if (!this.model) return;
     this.rRange = { ...this.model.rRange };
-    this.cacheCanvas = null;
-    this.lyapunovNorm = null;
     this.cacheKey = '';
     this.requestCompute();
     this.render();
@@ -379,8 +377,8 @@ export class BifurcationCanvas {
         if (newMax - newMin > 0.005) {
           this.rRange.min = newMin;
           this.rRange.max = newMax;
-          this.cacheCanvas = null;
-          this.lyapunovNorm = null;
+          // Keep the previous cached image as a placeholder while the worker
+          // recomputes; only replace it when the new result arrives.
           this.cacheKey = '';
           this.requestCompute();
           this.render();

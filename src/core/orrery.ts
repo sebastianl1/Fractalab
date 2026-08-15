@@ -24,7 +24,7 @@ function buildStars(ambient: HTMLElement): void {
   field.setAttribute('aria-hidden', 'true');
   ambient.appendChild(field);
 
-  const count = Math.min(150, Math.max(90, Math.floor(window.innerWidth / 9)));
+  const count = Math.min(110, Math.max(60, Math.floor(window.innerWidth / 14)));
   for (let i = 0; i < count; i++) {
     const star = document.createElement('span');
     star.className = `star size-${1 + Math.floor(Math.random() * 3)}`;
@@ -54,7 +54,7 @@ function buildConstellations(ambient: HTMLElement): void {
     return seed / 233280;
   };
 
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < 6; i++) {
     const x1 = rand() * 100;
     const y1 = rand() * 100;
     const x2 = x1 + (rand() - 0.5) * 26;
@@ -76,14 +76,14 @@ function buildGlyphs(ambient: HTMLElement): void {
   field.setAttribute('aria-hidden', 'true');
   ambient.appendChild(field);
 
-  const count = 6;
+  const count = 4;
   for (let i = 0; i < count; i++) {
     const glyph = document.createElement('span');
     glyph.className = 'glyph';
     glyph.textContent = GLYPH_SET[i % GLYPH_SET.length] ?? '∑';
-    glyph.style.left = `${6 + i * 16 + (i % 3) * 4}%`;
-    glyph.style.top = `${18 + ((i * 23) % 66)}%`;
-    glyph.style.fontSize = `${2.2 + (i % 3) * 1.4}rem`;
+    glyph.style.left = `${6 + i * 24 + (i % 3) * 4}%`;
+    glyph.style.top = `${20 + ((i * 23) % 64)}%`;
+    glyph.style.fontSize = `${2 + (i % 3) * 1.2}rem`;
     glyph.style.animationDelay = `${-i * 3}s`;
     field.appendChild(glyph);
   }
