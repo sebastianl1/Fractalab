@@ -16,6 +16,7 @@ import { GuidedExercisesPanel } from './components/GuidedExercisesPanel.js';
 import { LearnView } from './components/LearnView.js';
 import { ExamplesView } from './components/ExamplesView.js';
 import { VideosView } from './components/VideosView.js';
+import { ResourcesView } from './components/ResourcesView.js';
 import { TimeSeriesCanvas } from './components/TimeSeriesCanvas.js';
 import { HistogramCanvas } from './components/HistogramCanvas.js';
 import { renderLatex } from './math/latexHelper.js';
@@ -58,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const learnContainer = $<HTMLElement>('learn-view');
   const examplesContainer = $<HTMLElement>('examples-view');
   const videosContainer = $<HTMLElement>('videos-view');
+  const resourcesContainer = $<HTMLElement>('resources-view');
 
   const inspector = new InspectorPanel(inspectorContainer);
   const sonifier = new Sonifier();
@@ -113,6 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const videosView = new VideosView(videosContainer);
+  const resourcesView = new ResourcesView(resourcesContainer);
 
   // Populate the model selector dynamically from the registry.
   const modelOptions = globalModelRegistry.list();
@@ -191,6 +194,8 @@ document.addEventListener('DOMContentLoaded', () => {
       examplesView.render(i18n.lang);
     } else if (view === 'videos') {
       videosView.render(i18n.lang);
+    } else if (view === 'recursos') {
+      resourcesView.render(i18n.lang);
     }
   }
 
@@ -217,6 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
     learnView.setLang(i18n.lang);
     examplesView.render(i18n.lang);
     videosView.render(i18n.lang);
+    resourcesView.render(i18n.lang);
   });
 
   selectModel.addEventListener('change', (e) => {

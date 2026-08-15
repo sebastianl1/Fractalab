@@ -664,3 +664,87 @@
   color: var(--text-secondary);
   line-height: 1.4;
 }
+
+/* ========================================
+   RESOURCES VIEW (Recursos)
+   ======================================== */
+
+.resources-view {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.resources-hero {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(16, 185, 129, 0.08));
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  border-radius: var(--radius-lg);
+  padding: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.resources-hero h2 {
+  font-size: 1.2rem;
+  color: #fff;
+  margin-bottom: 0.3rem;
+}
+
+.resources-hero p {
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.resources-read-more {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-primary) !important;
+}
+
+.resources-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.resource-entry {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.7rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.resource-entry[data-kind='classic'] {
+  border-left: 3px solid var(--accent-amber);
+}
+
+.resource-entry[data-kind='book'] {
+  border-left: 3px solid var(--accent-teal);
+}
+
+.resource-kind {
+  font-size: 0.65rem;
+  color: var(--accent-amber);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.resource-citation {
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.resource-note {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.resource-link {
+  font-size: 0.72rem;
+  color: var(--accent-teal);
+}

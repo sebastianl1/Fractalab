@@ -1,74 +1,80 @@
 # λ FractaLab Sl: Bifurcaciones ↔ Mandelbrot Explorer
 
-[![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/es/docs/Web/JavaScript)
-[![Three.js](https://img.shields.io/badge/Three.js-r152-000000?style=for-the-badge&logo=three.js&logoColor=white)](https://threejs.org/)
-[![WebGL](https://img.shields.io/badge/WebGL-2.0-990000?style=for-the-badge&logo=webgl&logoColor=white)](https://get.webgl.org/)
-[![KaTeX](https://img.shields.io/badge/KaTeX-0.16-008080?style=for-the-badge&logo=latex&logoColor=white)](https://katex.org/)
+[![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Three.js](https://img.shields.io/badge/Three.js-r185-000000?style=for-the-badge&logo=three.js&logoColor=white)](https://threejs.org/)
+[![Vitest](https://img.shields.io/badge/Vitest-4-green?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev/)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
-**FractaLab Sl** es un **Laboratorio Virtual Interactivo** de dinámica no lineal, teoría del caos e isomorfismo con el Conjunto de Mandelbrot, diseñado para educación superior e ingeniería.
+**FractaLab Sl** es un **Laboratorio Virtual Interactivo** de dinámica no
+lineal, teoría del caos e isomorfismo con el Conjunto de Mandelbrot, diseñado
+para educación superior e ingeniería. Bilingüe (ES/EN) y desplegable como PWA
+ligera en GitHub Pages.
 
 > Hecho por **Sebastián Laguna**
 
 ---
 
-## 🌟 Características Principales
+## 🗂️ Estructura de la aplicación (multi-pestaña)
 
-- **🧮 Catálogo de 5 Modelos Matemáticos Seleccionables**:
-  - **Mapa Logístico**: $x_{n+1} = r \cdot x \cdot (1 - x)$
-  - **Mapa Seno**: $x_{n+1} = r \cdot \sin(\pi x)$
-  - **Mapa Cuadrático**: $x_{n+1} = r - x^2$
-  - **Mapa Exponencial**: $x_{n+1} = r \cdot e^{-x}$
-  - **Polinómico Generativo**: $x_{n+1} = r \cdot x \cdot (1 - x^k)$ *(con selector de grado $k \in \{2, 3, 4, 5\}$)*
+| Pestaña | Descripción |
+|---|---|
+| **🧪 Laboratorio** | Dashboard interactivo: bifurcación, Mandelbrot, espacio de fases 3D, telaraña, serie temporal, histograma e inspector |
+| **📚 Aprende** | 6 módulos curriculares con 19 lecciones bilingües (LaTeX, demos y autoevaluación) + glosario |
+| **🖼️ Ejemplos** | Galería de 15 casos curados que abren el laboratorio con parámetros precargados |
+| **🎬 Videos** | Reproductor y playlist para videolecciones (embeds YouTube + schema VideoObject) |
+| **📖 Recursos** | Bibliografía académica del caos (May, Feigenbaum, Li–Yorke, Strogatz…) |
 
-- **🖥️ Vista Paralela Dual & Conector Isomórfico**:
-  - Diagrama de Bifurcación a la izquierda ($r$ vs $x$) con trazado de Exponente de Lyapunov ($\lambda$).
-  - Corte real del Conjunto de Mandelbrot a la derecha ($c \in [-2.0, 0.25]$).
-  - Tarjeta e indicador visual dinámico en tiempo real conectando ambos espacios:
-    $$c = \frac{2r - r^2}{4} \quad \iff \quad r = 1 + \sqrt{1 - 4c}$$
+Cada pestaña es enlazable por hash (`#/lab`, `#/aprende`, …) y el estado del
+laboratorio se comparte y comparte por URL (`#/lab?model=sine&r=0.85`).
 
-- **🏭 Panel de Aplicaciones Reales en Ingeniería**:
-  - **⚡ Eléctrica**: Convertidores DC-DC Buck/Boost y rizado caótico en circuitos RLC.
-  - **🧪 Procesos**: Reacciones químicas autocatalíticas y estabilidad de reactores (CSTR).
-  - **⚙️ Mecánica**: Vibraciones caóticas en estructuras y oscilador Duffing.
-  - **🌱 Ambiental**: Modelos poblacionales de Ricker y riesgo de colapso ecológico.
-  - **💻 Informática**: Criptografía caótica (PRNGs), compresión fractal y gráficos procedurales GPU.
-  - **📡 Telecomunicaciones**: Óptica no lineal y modulación de fase en láseres.
+## 🧮 Modelos Matemáticos (10)
 
-- **🎯 Ejercicios Guiados para Estudiantes (Talleres de Laboratorio)**:
-  - 4 Retos interactivos paso a paso con verificación instantánea de parámetros, pistas y preguntas conceptuales de opción múltiple.
+- **Logístico** `r·x(1−x)` · **Cuadrático** `r−x²` — isomorfismo **exacto** con el eje real de Mandelbrot.
+- **Seno** `r·sin(πx)` · **Exponencial** `r·e⁻ˣ` · **Polinómico** `r·x(1−xᵏ)` — secciones paramétricas.
+- **Tienda (Tent)** · **Bernoulli** · **Ricker** · **Cúbico** · **Gauss**.
 
-- **🔊 Sonificación de Órbitas (Web Audio API)**:
-  - Convierte las órbitas $x_n$ en tonos sonoros para *escuchar la diferencia* entre la armonía de atractores estables y el ruido del caos determinista.
+El Inspector distingue honestamente entre isomorfismos exactos (conjugaciones
+reales) y secciones paramétricas del eje real.
 
-- **🖱️ Interacción Táctil y Móvil**:
-  - Diseño responsive y compatible con pantallas táctiles para usar en tablets y celulares.
+## ✨ Características
 
-- **📖 2 Principios Pedagógicos Clave**:
-  1. *El Caos es Universal*: Se manifiesta en múltiples familias de funciones bajo la misma constante universal de Feigenbaum ($\delta \approx 4.6692$).
-  2. *Mandelbrot es un Atlas*: Cartografía topológica completa de todas las bifurcaciones y ciclos límite cuadráticos.
+- Diagrama de bifurcación con curva de **Lyapunov** y zoom autosimilar.
+- Conjunto de **Mandelbrot** en WebGL con zoom infinito y 4 paletas.
+- **Espacio de fases 3D**, **telaraña** con x₀ arrastrable, **serie temporal** e **histograma**.
+- **Detección de periodo** en tiempo real y hitos de Feigenbaum.
+- **Sonificación** de órbitas (Web Audio API).
+- **Exportación PNG** de cualquier panel.
+- Bilingüe **ES/EN** con selector de idioma.
+- Diseño responsive y compatible con táctil.
 
----
+## ⚡ Rendimiento
 
-## 🚀 Instalación y Ejecución Local
+El diagrama de bifurcación se computa en un **Web Worker** y se cachea (mover
+el cursor r solo redibuja el overlay); el fallback CPU de Mandelbrot también
+corre en un worker con resolución progresiva.
+
+## 🚀 Instalación y ejecución
 
 ```bash
-# Clonar repositorio
-git clone https://github.com/tu-usuario/bifurcation-mandelbrot-explorer.git
-cd bifurcation-mandelbrot-explorer
-
-# Instalar dependencias
+git clone https://github.com/sebastianl1/Fractalab.git
+cd Fractalab
 npm install
-
-# Servidor de desarrollo
-npm run dev
-
-# Compilar producción
-npm run build
+npm run dev        # servidor de desarrollo
+npm run build      # build de producción a docs/
 ```
 
----
+### Calidad
+
+```bash
+npm run typecheck   # TypeScript estricto
+npm run lint        # ESLint
+npm run format      # Prettier
+npm run test        # Vitest (núcleo matemático)
+```
+
+CI ejecuta las 5 verificaciones en cada PR y despliega automáticamente a
+GitHub Pages desde `main`.
 
 ## 📄 Licencia
 
