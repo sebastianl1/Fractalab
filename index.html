@@ -22,8 +22,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 
-    <script type="module" crossorigin src="./assets/index-DmRuPRhZ.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-BFaEFooe.css">
+    <script type="module" crossorigin src="./assets/index-DY9Ei0Mz.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Ysk3ai_g.css">
   </head>
   <body>
     <!-- Premium Header Navbar -->
@@ -160,13 +160,16 @@
             <span class="panel-sub" data-i18n="panel.bifurcation.sub"
               >Arrastra la línea vertical para explorar el parámetro r</span
             >
-            <button
-              class="btn btn-fullscreen"
-              data-fullscreen="canvas-bifurcation"
-              title="Pantalla completa"
-            >
-              ⛶
-            </button>
+            <div class="panel-actions">
+              <button class="btn btn-export" title="Exportar PNG">📷</button>
+              <button
+                class="btn btn-fullscreen"
+                data-fullscreen="canvas-bifurcation"
+                title="Pantalla completa"
+              >
+                ⛶
+              </button>
+            </div>
           </div>
           <div class="panel-body">
             <canvas id="canvas-bifurcation"></canvas>
@@ -182,13 +185,16 @@
             <span class="panel-sub" data-i18n="panel.mandelbrot.sub"
               >Haz clic para seleccionar c o usa la rueda para Zoom</span
             >
-            <button
-              class="btn btn-fullscreen"
-              data-fullscreen="canvas-mandelbrot"
-              title="Pantalla completa"
-            >
-              ⛶
-            </button>
+            <div class="panel-actions">
+              <button class="btn btn-export" title="Exportar PNG">📷</button>
+              <button
+                class="btn btn-fullscreen"
+                data-fullscreen="canvas-mandelbrot"
+                title="Pantalla completa"
+              >
+                ⛶
+              </button>
+            </div>
           </div>
           <div class="panel-body">
             <canvas id="canvas-mandelbrot"></canvas>
@@ -205,13 +211,16 @@
             <span class="panel-sub" data-i18n="panel.phasespace.sub"
               >Arrastra con el mouse para rotar en 3D</span
             >
-            <button
-              class="btn btn-fullscreen"
-              data-fullscreen="canvas-3d-phase"
-              title="Pantalla completa"
-            >
-              ⛶
-            </button>
+            <div class="panel-actions">
+              <button class="btn btn-export" title="Exportar PNG">📷</button>
+              <button
+                class="btn btn-fullscreen"
+                data-fullscreen="canvas-3d-phase"
+                title="Pantalla completa"
+              >
+                ⛶
+              </button>
+            </div>
           </div>
           <div class="panel-body">
             <canvas id="canvas-3d-phase"></canvas>
@@ -238,16 +247,69 @@
             <span class="panel-sub" data-i18n="panel.cobweb.sub"
               >Arrastra la condición inicial x₀ en la base</span
             >
-            <button
-              class="btn btn-fullscreen"
-              data-fullscreen="canvas-cobweb"
-              title="Pantalla completa"
-            >
-              ⛶
-            </button>
+            <div class="panel-actions">
+              <button class="btn btn-export" title="Exportar PNG">📷</button>
+              <button
+                class="btn btn-fullscreen"
+                data-fullscreen="canvas-cobweb"
+                title="Pantalla completa"
+              >
+                ⛶
+              </button>
+            </div>
           </div>
           <div class="panel-body">
             <canvas id="canvas-cobweb"></canvas>
+          </div>
+        </section>
+
+        <!-- Panel 6: Time Series Canvas -->
+        <section class="canvas-panel">
+          <div class="panel-header">
+            <span class="panel-title" data-i18n="panel.timeseries"
+              ><span>📉</span> Serie Temporal x<sub>n</sub></span
+            >
+            <span class="panel-sub" data-i18n="panel.timeseries.sub"
+              >Evolución de la órbita frente a n</span
+            >
+            <div class="panel-actions">
+              <button class="btn btn-export" title="Exportar PNG">📷</button>
+              <button
+                class="btn btn-fullscreen"
+                data-fullscreen="canvas-timeseries"
+                title="Pantalla completa"
+              >
+                ⛶
+              </button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <canvas id="canvas-timeseries"></canvas>
+          </div>
+        </section>
+
+        <!-- Panel 7: Orbit Histogram Canvas -->
+        <section class="canvas-panel">
+          <div class="panel-header">
+            <span class="panel-title" data-i18n="panel.histogram"
+              ><span>📊</span> Histograma de la Órbita</span
+            >
+            <span class="panel-sub" data-i18n="panel.histogram.sub"
+              >Distribución de valores visitados por la órbita</span
+            >
+            <div class="panel-actions">
+              <button class="btn btn-export" title="Exportar PNG">📷</button>
+              <button
+                class="btn btn-fullscreen"
+                data-fullscreen="canvas-histogram"
+                title="Pantalla completa"
+              >
+                ⛶
+              </button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <canvas id="canvas-histogram"></canvas>
           </div>
         </section>
       </main>
@@ -311,12 +373,7 @@
 
     <!-- ======================= VIEW: EJEMPLOS ======================= -->
     <div data-view="ejemplos" class="content-view">
-      <section class="view-placeholder">
-        <h2>🖼️ Ejemplos</h2>
-        <p>
-          Galería de ejemplos resueltos y casos de estudio que se añadirán en la próxima iteración.
-        </p>
-      </section>
+      <section id="examples-view" class="examples-view"></section>
     </div>
 
     <!-- ======================= VIEW: VIDEOS ======================= -->
