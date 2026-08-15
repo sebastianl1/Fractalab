@@ -522,3 +522,145 @@
   font-size: 0.7rem;
   padding: 0.3rem 0.5rem;
 }
+
+/* ========================================
+   VIDEOS VIEW
+   ======================================== */
+
+.videos-view {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.video-hero {
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.12), rgba(139, 92, 246, 0.08));
+  border: 1px solid rgba(244, 63, 94, 0.25);
+  border-radius: var(--radius-lg);
+  padding: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.video-hero h2 {
+  font-size: 1.2rem;
+  color: #fff;
+  margin-bottom: 0.3rem;
+}
+
+.video-hero p {
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.video-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 769px) {
+  .video-layout:not(.video-layout-empty) {
+    grid-template-columns: 1.6fr 1fr;
+  }
+}
+
+.video-player-wrap {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #000;
+  border: 1px solid var(--border-color);
+}
+
+.video-player {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.video-coming-soon {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.video-coming-icon {
+  font-size: 2.5rem;
+}
+
+.video-coming-soon h3 {
+  color: var(--accent-rose);
+  font-size: 1rem;
+}
+
+.video-coming-soon p {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  max-width: 460px;
+  line-height: 1.5;
+}
+
+.video-playlist {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.video-card {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  text-align: left;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.7rem;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  transition: all var(--transition-fast);
+}
+
+.video-card:not(:disabled):hover {
+  border-color: var(--accent-rose);
+}
+
+.video-card.active {
+  border-color: var(--accent-rose);
+  background: rgba(244, 63, 94, 0.08);
+}
+
+.video-card:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.video-card-thumb {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.video-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.video-card-body strong {
+  font-size: 0.78rem;
+}
+
+.video-card-body span {
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
