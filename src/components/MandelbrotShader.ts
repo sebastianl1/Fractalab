@@ -234,6 +234,7 @@ export class MandelbrotShader {
         antialias: false,
         alpha: false,
         powerPreference: 'high-performance',
+        preserveDrawingBuffer: true,
         failIfMajorPerformanceCaveat: false,
       });
 

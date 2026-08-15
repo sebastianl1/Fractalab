@@ -401,3 +401,124 @@
   color: var(--text-secondary);
   line-height: 1.5;
 }
+
+/* ========================================
+   EXAMPLES VIEW (Ejemplos)
+   ======================================== */
+
+.examples-view {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.examples-hero {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(139, 92, 246, 0.08));
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  border-radius: var(--radius-lg);
+  padding: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.examples-hero h2 {
+  font-size: 1.2rem;
+  color: #fff;
+  margin-bottom: 0.3rem;
+}
+
+.examples-hero p {
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.examples-section-title {
+  font-size: 0.82rem;
+  color: var(--accent-teal);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 1.2rem 0 0.5rem;
+}
+
+.examples-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
+}
+
+@media (min-width: 641px) {
+  .examples-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .examples-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.example-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  transition:
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.example-card:hover {
+  border-color: var(--accent-teal);
+  transform: translateY(-2px);
+}
+
+.example-icon {
+  font-size: 1.3rem;
+}
+
+.example-card h4 {
+  font-size: 0.9rem;
+  color: #fff;
+}
+
+.example-card p {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  flex: 1;
+}
+
+.example-equation {
+  background: rgba(0, 0, 0, 0.3);
+  border-left: 3px solid var(--accent-violet);
+  border-radius: 4px;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.7rem;
+  color: var(--accent-rose);
+  overflow-x: auto;
+}
+
+.example-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.example-badge {
+  font-size: 0.65rem;
+  color: var(--accent-teal);
+  background: rgba(6, 182, 212, 0.08);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--radius-sm);
+}
+
+.example-open {
+  font-size: 0.7rem;
+  padding: 0.3rem 0.5rem;
+}

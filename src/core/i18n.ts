@@ -41,6 +41,10 @@ const es: Dict = {
   'panel.inspector': 'Inspector Matemático & Métricas de Caos',
   'panel.cobweb': 'Diagrama de Telaraña (Cobweb Plot: xₙ₊₁ = f(xₙ))',
   'panel.cobweb.sub': 'Arrastra la condición inicial x₀ en la base',
+  'panel.timeseries': 'Serie Temporal xₙ',
+  'panel.timeseries.sub': 'Evolución de la órbita frente a n',
+  'panel.histogram': 'Histograma de la Órbita',
+  'panel.histogram.sub': 'Distribución de valores visitados por la órbita',
 
   // Ingeniería
   'eng.title': '🏭 Aplicaciones Reales en Ingeniería',
@@ -117,6 +121,10 @@ const en: Dict = {
   'panel.inspector': 'Mathematical Inspector & Chaos Metrics',
   'panel.cobweb': 'Cobweb Plot (xₙ₊₁ = f(xₙ))',
   'panel.cobweb.sub': 'Drag the initial condition x₀ along the base',
+  'panel.timeseries': 'Time Series xₙ',
+  'panel.timeseries.sub': 'Orbit evolution vs n',
+  'panel.histogram': 'Orbit Histogram',
+  'panel.histogram.sub': 'Distribution of values visited by the orbit',
 
   'eng.title': '🏭 Real Engineering Applications',
   'eng.subtitle': 'Practical cases of nonlinear dynamics in real systems.',

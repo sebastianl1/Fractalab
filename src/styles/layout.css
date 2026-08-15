@@ -343,6 +343,13 @@ input[type='range']::-moz-range-thumb {
   line-height: 1.2;
 }
 
+.panel-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+
 .panel-sub {
   display: none;
   font-size: 0.65rem;

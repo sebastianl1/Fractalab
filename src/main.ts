@@ -14,6 +14,9 @@ import { TheoryModal } from './components/TheoryModal.js';
 import { EngineeringCasePanel } from './components/EngineeringCasePanel.js';
 import { GuidedExercisesPanel } from './components/GuidedExercisesPanel.js';
 import { LearnView } from './components/LearnView.js';
+import { ExamplesView } from './components/ExamplesView.js';
+import { TimeSeriesCanvas } from './components/TimeSeriesCanvas.js';
+import { HistogramCanvas } from './components/HistogramCanvas.js';
 import { renderLatex } from './math/latexHelper.js';
 
 function $<T extends HTMLElement = HTMLElement>(id: string): T {
@@ -52,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const connectorLatex = $<HTMLElement>('connector-latex');
   const btnLang = $<HTMLButtonElement>('btn-lang');
   const learnContainer = $<HTMLElement>('learn-view');
+  const examplesContainer = $<HTMLElement>('examples-view');
 
   const inspector = new InspectorPanel(inspectorContainer);
   const sonifier = new Sonifier();
@@ -73,6 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
   );
 
   const cobweb = new CobwebCanvas($<HTMLCanvasElement>('canvas-cobweb'));
+  const timeSeries = new TimeSeriesCanvas($<HTMLCanvasElement>('canvas-timeseries'));
+  const histogram = new HistogramCanvas($<HTMLCanvasElement>('canvas-histogram'));
   const phaseSpace = new ThreePhaseScene($<HTMLCanvasElement>('canvas-3d-phase'));
 
   new EngineeringCasePanel((modelId, targetR) => {
@@ -91,6 +97,13 @@ document.addEventListener('DOMContentLoaded', () => {
   );
 
   const learnView = new LearnView(learnContainer, (modelId, r) => {
+    appState.modelId = modelId;
+    appState.r = r;
+    navigate('lab');
+    syncRouteFromState();
+  });
+
+  const examplesView = new ExamplesView(examplesContainer, (modelId, r) => {
     appState.modelId = modelId;
     appState.r = r;
     navigate('lab');
@@ -132,6 +145,10 @@ document.addEventListener('DOMContentLoaded', () => {
     bifurcation.setSelectedR(r);
     cobweb.setModel(model);
     cobweb.setR(r);
+    timeSeries.setModel(model);
+    timeSeries.setR(r);
+    histogram.setModel(model);
+    histogram.setR(r);
     phaseSpace.setModel(model);
     phaseSpace.setR(r);
     inspector.setModel(model);
@@ -166,6 +183,8 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(handleResize, 60);
     } else if (view === 'aprende') {
       learnView.render(i18n.lang);
+    } else if (view === 'ejemplos') {
+      examplesView.render(i18n.lang);
     }
   }
 
@@ -190,6 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnLang.textContent = i18n.lang.toUpperCase();
     if (sonifier.isPlaying) audioText.textContent = i18n.t('header.audio.playing');
     learnView.setLang(i18n.lang);
+    examplesView.render(i18n.lang);
   });
 
   selectModel.addEventListener('change', (e) => {
@@ -243,6 +263,8 @@ document.addEventListener('DOMContentLoaded', () => {
     mandelbrot.resize();
     bifurcation.resize();
     cobweb.resize();
+    timeSeries.resize();
+    histogram.resize();
     phaseSpace.resize();
   }
 
@@ -261,8 +283,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (canvasId === 'canvas-mandelbrot') mandelbrot.resize();
         else if (canvasId === 'canvas-bifurcation') bifurcation.resize();
         else if (canvasId === 'canvas-cobweb') cobweb.resize();
+        else if (canvasId === 'canvas-timeseries') timeSeries.resize();
+        else if (canvasId === 'canvas-histogram') histogram.resize();
         else if (canvasId === 'canvas-3d-phase') phaseSpace.resize();
       }, 50);
+    });
+  });
+
+  // Export any panel canvas to PNG.
+  document.querySelectorAll<HTMLElement>('.btn-export').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const panel = btn.closest('.canvas-panel');
+      const canvas = panel?.querySelector<HTMLCanvasElement>('canvas');
+      if (!canvas || !panel) return;
+      const title = panel.querySelector('.panel-title')?.textContent?.trim() ?? 'fractalab';
+      const a = document.createElement('a');
+      a.download = `${title.replace(/[^\w-]+/g, '-').toLowerCase()}.png`;
+      a.href = canvas.toDataURL('image/png');
+      a.click();
     });
   });
 
