@@ -2,20 +2,52 @@
    LAYOUT - Responsive (Mobile-First)
    ======================================== */
 
-/* --- Header --- */
-.app-header {
+/* --- Site header (brand + tabs, global) --- */
+.site-header {
   background: rgba(13, 18, 37, 0.95);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-color);
   padding: 0.5rem 0.75rem;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
   position: sticky;
   top: 0;
   z-index: 100;
+  flex-wrap: nowrap;
+}
+
+.btn-lang {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  min-height: 32px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: var(--radius-md);
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.btn-lang:hover {
+  border-color: var(--accent-violet);
+  color: #fff;
+}
+
+/* --- Lab toolbar (exclusive to the Laboratory tab) --- */
+.lab-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.75rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .brand-logo {

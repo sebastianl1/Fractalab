@@ -102,12 +102,18 @@ body {
 }
 
 /* ---------- Header polish ---------- */
-.app-header {
+.site-header {
   background: rgba(10, 14, 30, 0.72);
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35);
+}
+
+.lab-toolbar {
+  background: rgba(13, 18, 37, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .brand-title {
@@ -130,9 +136,7 @@ body {
 
 /* ---------- Tab navigation (premium pills) ---------- */
 .tab-nav {
-  padding: 0.55rem 0.85rem;
   gap: 0.4rem;
-  background: rgba(10, 14, 30, 0.55);
 }
 
 .tab-nav-btn {

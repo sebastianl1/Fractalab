@@ -72,59 +72,61 @@
       <div class="starfield"></div>
     </div>
 
-    <!-- Premium Header Navbar -->
-    <header class="app-header">
+    <!-- Site Header: brand + tabs (global, sticky) -->
+    <header class="site-header">
       <div class="brand-logo">
         <div class="brand-icon">λ</div>
         <div class="brand-title">FractaLab Sl</div>
       </div>
 
-      <!-- Active Model Selector -->
-      <div class="model-selector-group">
-        <label for="select-model" class="control-label" data-i18n="header.model"
-          >Modelo Matemático:</label
-        >
-        <select id="select-model" class="model-select"></select>
+      <nav class="tab-nav" id="tab-nav" aria-label="Navegación principal">
+        <button class="tab-nav-btn active" data-view-link="lab">🧪 <span>Laboratorio</span></button>
+        <button class="tab-nav-btn" data-view-link="aprende">📚 <span>Aprende</span></button>
+        <button class="tab-nav-btn" data-view-link="ejemplos">🖼️ <span>Ejemplos</span></button>
+        <button class="tab-nav-btn" data-view-link="videos">🎬 <span>Videos</span></button>
+        <button class="tab-nav-btn" data-view-link="recursos">📖 <span>Recursos</span></button>
+      </nav>
 
-        <div id="poly-k-container" class="poly-k-group" style="display: none">
-          <label for="select-poly-k" class="control-label" data-i18n="header.degree"
-            >Grado k:</label
-          >
-          <select id="select-poly-k">
-            <option value="2">k = 2</option>
-            <option value="3" selected>k = 3</option>
-            <option value="4">k = 4</option>
-            <option value="5">k = 5</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="nav-actions">
-        <button id="btn-lang" class="btn" title="Idioma / Language">ES | EN</button>
-        <button id="btn-audio" class="btn">
-          <span id="audio-icon">🔊</span>
-          <span id="audio-text" data-i18n="header.audio">Sonificar</span>
-        </button>
-        <button id="btn-exercises" class="btn btn-accent">
-          <span>🎯</span> <span data-i18n="header.exercises">Ejercicios</span>
-        </button>
-        <button id="btn-theory" class="btn btn-primary">
-          <span>📖</span> <span data-i18n="header.theory">Teoría & Isomorfismo</span>
-        </button>
-      </div>
+      <button id="btn-lang" class="btn btn-lang" title="Idioma / Language">ES | EN</button>
     </header>
-
-    <!-- Tab Navigation -->
-    <nav class="tab-nav" id="tab-nav" aria-label="Navegación principal">
-      <button class="tab-nav-btn active" data-view-link="lab">🧪 <span>Laboratorio</span></button>
-      <button class="tab-nav-btn" data-view-link="aprende">📚 <span>Aprende</span></button>
-      <button class="tab-nav-btn" data-view-link="ejemplos">🖼️ <span>Ejemplos</span></button>
-      <button class="tab-nav-btn" data-view-link="videos">🎬 <span>Videos</span></button>
-      <button class="tab-nav-btn" data-view-link="recursos">📖 <span>Recursos</span></button>
-    </nav>
 
     <!-- ======================= VIEW: LAB ======================= -->
     <div data-view="lab" class="active">
+      <!-- Lab Toolbar (exclusive to the Laboratory tab) -->
+      <div class="lab-toolbar">
+        <div class="model-selector-group">
+          <label for="select-model" class="control-label" data-i18n="header.model"
+            >Modelo Matemático:</label
+          >
+          <select id="select-model" class="model-select"></select>
+
+          <div id="poly-k-container" class="poly-k-group" style="display: none">
+            <label for="select-poly-k" class="control-label" data-i18n="header.degree"
+              >Grado k:</label
+            >
+            <select id="select-poly-k">
+              <option value="2">k = 2</option>
+              <option value="3" selected>k = 3</option>
+              <option value="4">k = 4</option>
+              <option value="5">k = 5</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="nav-actions">
+          <button id="btn-audio" class="btn">
+            <span id="audio-icon">🔊</span>
+            <span id="audio-text" data-i18n="header.audio">Sonificar</span>
+          </button>
+          <button id="btn-exercises" class="btn btn-accent">
+            <span>🎯</span> <span data-i18n="header.exercises">Ejercicios</span>
+          </button>
+          <button id="btn-theory" class="btn btn-primary">
+            <span>📖</span> <span data-i18n="header.theory">Teoría & Isomorfismo</span>
+          </button>
+        </div>
+      </div>
+
       <!-- Lab Hero Banner -->
       <section class="lab-hero reveal">
         <div class="lab-hero-copy">
