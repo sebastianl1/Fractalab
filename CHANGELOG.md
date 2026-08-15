@@ -6,7 +6,27 @@ y el proyecto usa [Conventional Commits](https://www.conventionalcommits.org/).
 
 ## [En desarrollo]
 
-### Diseño — Identidad "Observatorio Espacial"
+### Rediseño — AETHERION: Galaxia Matemática (nuevo desde cero)
+- **UI reconstruida por completo**: se sustituye el sistema previo por una
+  identidad "observatorio espacial" con implementación matemática.
+- Navegación **dock orbital**: nodos-estrella con glifos matemáticos
+  (λ · ∫ · Σ · ◉ · ∞), estrella activa con anillo orbital y línea de
+  constelación energizada hacia los vecinos.
+- Superficies **visorios angulares**: brackets de esquina (HUD), scanline,
+  borde luminoso y cabecera de **telemetría** (`SYS·01`…) por panel.
+- Botones **instrumento** con esquinas recortadas y núcleo luminoso
+  (oro cósmico / cian plasma).
+- Fondo **espacio profundo** por capas (profundidad 0→5): nebulosas,
+  retícula celeste, starfield generado, constelaciones y glifos flotantes,
+  con **parallax al hacer scroll** (`src/core/orrery.ts`).
+- Hero **orrería**: λ central con anillos orbitales y planetas.
+- Paleta **Aurora Cósmica** (solo oscuro): oro `#F6C445`, cian `#4DD8FF`,
+  violeta nebulosa `#9B6BFF`, rosa cósmico `#FF5D8F`, verde aurora `#2EE6A8`.
+- Tipografía **Chakra Petch** (display) + Space Grotesk + JetBrains Mono.
+- Reveal de paneles con **iris-in** (clip-path); respeta `prefers-reduced-motion`.
+- Se **elimina el tema claro** y el toggle (solo oscuro).
+
+### Seguridad y despliegue
 - Rediseño completo del design system: paleta ámbar solar + cian profundo
   sobre casi-negro (dark) y marfil (light).
 - **Toggle claro/oscuro** con persistencia en localStorage y detección por

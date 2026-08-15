@@ -4,7 +4,7 @@ import { parseHash, navigate } from './core/router.js';
 import type { ViewId } from './core/router.js';
 import { applyRouteToState, syncRouteFromState } from './core/urlState.js';
 import { initReveals } from './core/reveal.js';
-import { getTheme, toggleTheme, onThemeChange } from './core/theme.js';
+import { initOrrery } from './core/orrery.js';
 import { globalModelRegistry } from './math/models/ModelRegistry.js';
 import { MandelbrotShader } from './components/MandelbrotShader.js';
 import { BifurcationCanvas } from './components/BifurcationCanvas.js';
@@ -59,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const connectorCText = $<HTMLElement>('connector-c-text');
   const connectorLatex = $<HTMLElement>('connector-latex');
   const btnLang = $<HTMLButtonElement>('btn-lang');
-  const btnTheme = $<HTMLButtonElement>('btn-theme');
   const learnContainer = $<HTMLElement>('learn-view');
   const examplesContainer = $<HTMLElement>('examples-view');
   const videosContainer = $<HTMLElement>('videos-view');
@@ -92,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const histogram = new HistogramCanvas($<HTMLCanvasElement>('canvas-histogram'));
   const phaseSpace = new ThreePhaseScene($<HTMLCanvasElement>('canvas-3d-phase'));
 
-  const engineeringPanel = new EngineeringCasePanel((modelId, targetR) => {
+  new EngineeringCasePanel((modelId, targetR) => {
     appState.modelId = modelId;
     appState.r = targetR;
   });
@@ -221,27 +220,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ---- Language ----------------------------------------------------------
   btnLang.addEventListener('click', () => i18n.toggle());
-
-  // ---- Theme -------------------------------------------------------------
-  const syncThemeIcon = (): void => {
-    btnTheme.textContent = getTheme() === 'dark' ? '🌙' : '☀️';
-  };
-
-  btnTheme.addEventListener('click', () => {
-    toggleTheme();
-    syncThemeIcon();
-  });
-
-  onThemeChange(() => {
-    mandelbrot.render();
-    bifurcation.render();
-    cobweb.render();
-    timeSeries.render();
-    histogram.render();
-    phaseSpace.refreshTheme();
-    inspector.update(appState.r);
-    engineeringPanel.refresh();
-  });
 
   i18n.onLangChange(() => {
     applyUIStrings();
@@ -390,9 +368,9 @@ document.addEventListener('DOMContentLoaded', () => {
   applyRouteToState();
   applyUIStrings();
   btnLang.textContent = i18n.lang.toUpperCase();
-  syncThemeIcon();
   handleRouteChange();
   initReveals();
+  initOrrery();
 
   syncUI();
   setTimeout(handleResize, 100);

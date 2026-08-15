@@ -3,32 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#05060a" />
+    <meta name="theme-color" content="#03050d" />
     <meta
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data: https://img.youtube.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com; connect-src 'self' data: blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'"
     />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <!-- Apply theme before first paint (no flash) -->
-    <script>
-      (function () {
-        try {
-          var t = localStorage.getItem('fractalab-theme');
-          if (!t) {
-            t =
-              window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches
-                ? 'light'
-                : 'dark';
-          }
-          document.documentElement.dataset.theme = t;
-          var m = document.querySelector('meta[name="theme-color"]');
-          if (m) m.setAttribute('content', t === 'dark' ? '#05060a' : '#f7f5f0');
-        } catch (e) {
-          document.documentElement.dataset.theme = 'dark';
-        }
-      })();
-    </script>
     <title>FractaLab Sl: Bifurcaciones ↔ Mandelbrot</title>
     <meta
       name="description"
@@ -38,7 +19,7 @@
     <meta property="og:title" content="FractaLab Sl: Bifurcaciones ↔ Mandelbrot" />
     <meta
       property="og:description"
-      content="Laboratorio interactivo para aprender teoría del caos: diagramas de bifurcación, exponente de Lyapunov, duplicación de periodo y el conjunto de Mandelbrot."
+      content="Observatorio matemático interactivo para aprender teoría del caos: bifurcaciones, Lyapunov y el conjunto de Mandelbrot."
     />
     <meta property="og:url" content="https://sebastianl1.github.io/Fractalab/" />
     <meta property="og:locale" content="es_ES" />
@@ -48,7 +29,14 @@
     <link
       rel="icon"
       type="image/svg+xml"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23080c18' rx='6'/%3E%3Ctext x='16' y='24' text-anchor='middle' fill='%238b5cf6' font-size='22' font-family='serif' font-weight='bold'%3E%26%23x3BB;%3C/text%3E%3C/svg%3E"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2303050d'/%3E%3Ccircle cx='16' cy='16' r='9' fill='%23f6c445'/%3E%3Ctext x='16' y='22' text-anchor='middle' fill='%23241a00' font-size='16' font-family='serif' font-weight='bold'%3E%26%23x3BB;%3C/text%3E%3C/svg%3E"
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
     />
 
     <!-- KaTeX for LaTeX rendering -->
@@ -63,7 +51,7 @@
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": "FractaLab Sl",
-        "description": "Laboratorio virtual interactivo de dinámica no lineal, teoría del caos y el conjunto de Mandelbrot.",
+        "description": "Observatorio matemático interactivo de dinámica no lineal, teoría del caos y el conjunto de Mandelbrot.",
         "inLanguage": ["es", "en"],
         "about": {
           "@type": "LearningResource",
@@ -82,37 +70,53 @@
     </script>
   </head>
   <body>
-    <!-- Ambient cinematic background (depth 0-1) -->
+    <!-- Cosmic background layers (depth 0 → 5) -->
     <div class="ambient-bg" aria-hidden="true">
-      <div class="ambient-glow glow-a"></div>
-      <div class="ambient-glow glow-b"></div>
-      <div class="ambient-glow glow-c"></div>
-      <div class="grid-overlay"></div>
-      <div class="starfield"></div>
+      <div class="plx" data-depth="0.1">
+        <div class="nebula nebula-a"></div>
+        <div class="nebula nebula-b"></div>
+        <div class="nebula nebula-c"></div>
+      </div>
+      <div class="plx" data-depth="0.25">
+        <div class="ret-grid"></div>
+      </div>
+      <div class="plx" data-depth="0.5">
+        <div class="constellations"></div>
+        <div class="glyph-field"></div>
+      </div>
     </div>
 
-    <!-- Site Header: brand + tabs (global, sticky) -->
+    <!-- Site header · orbital dock -->
     <header class="site-header">
       <div class="brand-logo">
         <div class="brand-icon">λ</div>
-        <div class="brand-title">FractaLab Sl</div>
+        <div class="brand-title">FRACTALAB</div>
       </div>
 
       <nav class="tab-nav" id="tab-nav" aria-label="Navegación principal">
-        <button class="tab-nav-btn active" data-view-link="lab">🧪 <span>Laboratorio</span></button>
-        <button class="tab-nav-btn" data-view-link="aprende">📚 <span>Aprende</span></button>
-        <button class="tab-nav-btn" data-view-link="ejemplos">🖼️ <span>Ejemplos</span></button>
-        <button class="tab-nav-btn" data-view-link="videos">🎬 <span>Videos</span></button>
-        <button class="tab-nav-btn" data-view-link="recursos">📖 <span>Recursos</span></button>
+        <button class="tab-nav-btn active" data-view-link="lab">
+          <span class="dock-glyph">λ</span><span class="dock-label">Laboratorio</span>
+        </button>
+        <button class="tab-nav-btn" data-view-link="aprende">
+          <span class="dock-glyph">∫</span><span class="dock-label">Aprende</span>
+        </button>
+        <button class="tab-nav-btn" data-view-link="ejemplos">
+          <span class="dock-glyph">Σ</span><span class="dock-label">Ejemplos</span>
+        </button>
+        <button class="tab-nav-btn" data-view-link="videos">
+          <span class="dock-glyph">◉</span><span class="dock-label">Videos</span>
+        </button>
+        <button class="tab-nav-btn" data-view-link="recursos">
+          <span class="dock-glyph">∞</span><span class="dock-label">Recursos</span>
+        </button>
       </nav>
 
-      <button id="btn-theme" class="btn btn-theme" title="Tema claro / oscuro">🌙</button>
       <button id="btn-lang" class="btn btn-lang" title="Idioma / Language">ES | EN</button>
     </header>
 
     <!-- ======================= VIEW: LAB ======================= -->
     <div data-view="lab" class="active">
-      <!-- Lab Toolbar (exclusive to the Laboratory tab) -->
+      <!-- Lab toolbar (exclusive to the Laboratory tab) -->
       <div class="lab-toolbar">
         <div class="model-selector-group">
           <label for="select-model" class="control-label" data-i18n="header.model"
@@ -147,29 +151,32 @@
         </div>
       </div>
 
-      <!-- Lab Hero Banner -->
+      <!-- Orrery hero -->
       <section class="lab-hero reveal">
         <div class="lab-hero-copy">
-          <p class="lab-hero-eyebrow">⌬ Laboratorio virtual de dinámica no lineal</p>
+          <p class="lab-hero-eyebrow">⌬ Observatorio de dinámica no lineal</p>
           <h1 class="lab-hero-title">
-            Explora el <span class="grad-text">caos determinista</span>
+            Galaxia del <span class="grad-text">caos determinista</span>
           </h1>
+          <div class="lab-hero-coord font-mono">RA 03h 12m · DEC −22.4° · z = c + ε</div>
           <p class="lab-hero-sub">
-            Bifurcaciones, exponente de Lyapunov y el conjunto de Mandelbrot: un atlas interactivo
-            para entender cómo el orden se convierte en caos.
+            Bifurcaciones, exponente de Lyapunov y el conjunto de Mandelbrot: un atlas celeste para
+            ver cómo el orden matemático se pliega en caos.
           </p>
           <div class="lab-hero-badges">
-            <span class="hero-badge">🧮 10 modelos</span>
-            <span class="hero-badge">📈 Lyapunov en vivo</span>
-            <span class="hero-badge">🧭 Mandelbrot ↔ Bifurcación</span>
-            <span class="hero-badge">🔊 Sonificación</span>
+            <span class="hero-badge">10 modelos</span>
+            <span class="hero-badge">Lyapunov en vivo</span>
+            <span class="hero-badge">Mandelbrot ↔ Bifurcación</span>
+            <span class="hero-badge">Sonificación</span>
           </div>
         </div>
         <div class="lab-hero-visual" aria-hidden="true">
-          <div class="hero-orb hero-orb-1"></div>
-          <div class="hero-orb hero-orb-2"></div>
-          <div class="hero-orb hero-orb-3"></div>
-          <div class="hero-lambda">λ</div>
+          <div class="orrery">
+            <div class="orbit-ring r1"><span class="planet p1"></span></div>
+            <div class="orbit-ring r2"><span class="planet p2"></span></div>
+            <div class="orbit-ring r3"><span class="planet p3"></span></div>
+            <div class="orrery-core">λ</div>
+          </div>
         </div>
       </section>
 
@@ -186,17 +193,16 @@
             value="3.0"
             style="width: 210px"
           />
-          <span id="label-r-val" class="font-mono label-highlight">3.0000</span>
+          <span id="label-r-val" class="label-highlight">3.0000</span>
         </div>
 
-        <!-- Dynamic r <-> c Isomorphism Connector Card -->
         <div class="connector-card">
           <span class="connector-icon">🔗</span>
           <span class="connector-text" data-i18n="ctrl.iso">
             Isomorfismo:
             <strong id="connector-r-text" class="font-mono">r = 3.0000</strong>
             <span class="arrow">⟷</span>
-            <strong id="connector-c-text" class="font-mono" style="color: var(--accent-rose)">
+            <strong id="connector-c-text" class="font-mono" style="color: var(--cyan)">
               c = -0.7500</strong
             >
           </span>
@@ -208,10 +214,10 @@
             >Paleta Mandelbrot:</label
           >
           <select id="select-palette">
-            <option value="0">Neon Cyberpunk</option>
-            <option value="1">Fuego Ámbar</option>
-            <option value="2">Nebulosa Cósmica</option>
-            <option value="3">Azul Eléctrico</option>
+            <option value="0">Solar</option>
+            <option value="1">Nebulosa</option>
+            <option value="2">Espectro</option>
+            <option value="3">Atlas</option>
           </select>
         </div>
 
@@ -240,7 +246,7 @@
             value="140"
             style="width: 90px"
           />
-          <span id="label-note" class="font-mono label-highlight">—</span>
+          <span id="label-note" class="label-highlight">—</span>
         </div>
 
         <button id="btn-reset" class="btn" style="margin-left: auto">
@@ -264,10 +270,9 @@
         </div>
       </section>
 
-      <!-- Main Grid Dashboard (Dual HD Views + 3D Phase Space) -->
+      <!-- Dashboard: angular viewports -->
       <main class="app-container reveal">
-        <!-- Panel 1: HD Bifurcation Canvas (LEFT) -->
-        <section class="canvas-panel">
+        <section class="canvas-panel" data-sys="SYS·01">
           <div class="panel-header">
             <span class="panel-title" data-i18n="panel.bifurcation"
               ><span>📈</span> Diagrama de Bifurcación HD (r vs x)</span
@@ -291,8 +296,7 @@
           </div>
         </section>
 
-        <!-- Panel 2: HD Mandelbrot Canvas (RIGHT) -->
-        <section class="canvas-panel">
+        <section class="canvas-panel" data-sys="SYS·02">
           <div class="panel-header">
             <span class="panel-title" data-i18n="panel.mandelbrot"
               ><span>🌀</span> Conjunto de Mandelbrot & Eje Real Isomórfico (c ∈ [-2.0, 0.25])</span
@@ -316,11 +320,10 @@
           </div>
         </section>
 
-        <!-- Panel 3: 3D Phase Space Attractor Projection Canvas -->
-        <section class="canvas-panel">
+        <section class="canvas-panel" data-sys="SYS·03">
           <div class="panel-header">
             <span class="panel-title" data-i18n="panel.phasespace"
-              ><span>🧊</span> Espacio de Fases Tridimensional 3D (x<sub>n</sub>, x<sub>n+1</sub>,
+              ><span>🧊</span> Espacio de Fases 3D (x<sub>n</sub>, x<sub>n+1</sub>,
               x<sub>n+2</sub>)</span
             >
             <span class="panel-sub" data-i18n="panel.phasespace.sub"
@@ -342,8 +345,7 @@
           </div>
         </section>
 
-        <!-- Panel 4: Real-time Inspector & Metrics Panel -->
-        <section class="canvas-panel">
+        <section class="canvas-panel" data-sys="SYS·04">
           <div class="panel-header">
             <span class="panel-title" data-i18n="panel.inspector"
               ><span>📊</span> Inspector Matemático & Métricas de Caos</span
@@ -352,8 +354,7 @@
           <div id="inspector-container"></div>
         </section>
 
-        <!-- Panel 5: Cobweb Phase Plot Canvas -->
-        <section class="canvas-panel grid-span-full">
+        <section class="canvas-panel grid-span-full" data-sys="SYS·05">
           <div class="panel-header">
             <span class="panel-title" data-i18n="panel.cobweb"
               ><span>🕸️</span> Diagrama de Telaraña (Cobweb Plot: x<sub>n+1</sub> =
@@ -378,8 +379,7 @@
           </div>
         </section>
 
-        <!-- Panel 6: Time Series Canvas -->
-        <section class="canvas-panel">
+        <section class="canvas-panel" data-sys="SYS·06">
           <div class="panel-header">
             <span class="panel-title" data-i18n="panel.timeseries"
               ><span>📉</span> Serie Temporal x<sub>n</sub></span
@@ -403,8 +403,7 @@
           </div>
         </section>
 
-        <!-- Panel 7: Orbit Histogram Canvas -->
-        <section class="canvas-panel">
+        <section class="canvas-panel" data-sys="SYS·07">
           <div class="panel-header">
             <span class="panel-title" data-i18n="panel.histogram"
               ><span>📊</span> Histograma de la Órbita</span

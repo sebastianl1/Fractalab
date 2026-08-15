@@ -210,17 +210,6 @@ export class ThreePhaseScene {
     window.addEventListener('resize', () => this.resize());
   }
 
-  /** Re-apply theme colors without rebuilding the scene. */
-  refreshTheme(): void {
-    const colors = viz();
-    this.scene.background = new THREE.Color(colors.bg);
-    const pointsMat = this.orbitPointsObj.material as THREE.PointsMaterial;
-    pointsMat.color = new THREE.Color(colors.rose);
-    const headMat = this.headSphere.material as THREE.MeshBasicMaterial;
-    headMat.color = new THREE.Color(colors.amber);
-    this.renderer.render(this.scene, this.camera);
-  }
-
   dispose(): void {
     if (this.animationId !== null) cancelAnimationFrame(this.animationId);
     window.removeEventListener('resize', this.resize);

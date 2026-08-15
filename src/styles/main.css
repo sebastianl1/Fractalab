@@ -1,5 +1,6 @@
-@import './base.css';
-@import './layout.css';
-@import './components.css';
+@import './tokens.css';
+@import './core.css';
+@import './nav.css';
+@import './surfaces.css';
 @import './views.css';
-@import './premium.css';
+@import './motion.css';

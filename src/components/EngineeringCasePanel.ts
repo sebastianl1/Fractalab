@@ -6,7 +6,6 @@ import { viz } from '../core/theme.js';
 /** Panel of real engineering applications with a synthetic waveform preview. */
 export class EngineeringCasePanel {
   private onSelectModelAndR: (modelId: string, targetR: number) => void;
-  private currentCaseId = 'electrical';
 
   private titleEl: HTMLElement | null;
   private subtitleEl: HTMLElement | null;
@@ -44,7 +43,6 @@ export class EngineeringCasePanel {
   }
 
   selectCase(caseId: string): void {
-    this.currentCaseId = caseId;
     const caseData = ENGINEERING_CASES.find((c) => c.id === caseId) ?? ENGINEERING_CASES[0]!;
 
     const tabs = this.tabsContainer?.querySelectorAll('.eng-tab') ?? [];
@@ -111,12 +109,5 @@ export class EngineeringCasePanel {
     this.ctx.shadowBlur = 10 * dpr;
     this.ctx.stroke();
     this.ctx.shadowBlur = 0;
-  }
-
-  /** Re-render the current case (e.g. after a theme change). */
-  refresh(): void {
-    const caseData =
-      ENGINEERING_CASES.find((c) => c.id === this.currentCaseId) ?? ENGINEERING_CASES[0]!;
-    this.renderSignal(caseData);
   }
 }
