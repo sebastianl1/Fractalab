@@ -1,0 +1,389 @@
+import type { BifurcationModel } from '../math/models/BaseModel.js';
+import type { ModelRange } from '../math/models/BaseModel.js';
+import { computeBifurcationData, colorizeDensity } from '../math/bifurcationCompute.js';
+import type {
+  BifurcationComputeRequest,
+  BifurcationComputeResult,
+} from '../math/bifurcationCompute.js';
+
+/**
+ * 2D canvas rendering of the bifurcation diagram + Lyapunov curve.
+ *
+ * The density grid and the Lyapunov curve depend only on the model and the
+ * current r-zoom window, NOT on the selected parameter r. Both are therefore
+ * computed once per (model, zoom) in a Web Worker and cached; moving the r
+ * cursor only redraws the (cheap) overlay.
+ */
+export class BifurcationCanvas {
+  private canvas: HTMLCanvasElement;
+  private ctx: CanvasRenderingContext2D;
+  private onSelectR: (r: number) => void;
+
+  private model: BifurcationModel | null = null;
+  private rRange: ModelRange = { min: 1.0, max: 4.0 };
+  private xRange: ModelRange = { min: 0.0, max: 1.0 };
+  private selectedR = 3.0;
+
+  private showLyapunov = true;
+  private orbitDensity = 1200;
+
+  private worker: Worker | null = null;
+  private computeId = 0;
+
+  private cacheCanvas: HTMLCanvasElement | null = null;
+  private lyapunovNorm: Float32Array | null = null;
+  private cacheKey = '';
+
+  private _rafId: number | null = null;
+  private _dirty = false;
+
+  constructor(canvasElement: HTMLCanvasElement, onSelectR: (r: number) => void) {
+    this.canvas = canvasElement;
+    const ctx = canvasElement.getContext('2d');
+    if (!ctx) throw new Error('No 2D context available');
+    this.ctx = ctx;
+    this.onSelectR = onSelectR;
+    this.initWorker();
+    this.initEvents();
+  }
+
+  private initWorker(): void {
+    try {
+      this.worker = new Worker(new URL('../workers/bifurcation.worker.ts', import.meta.url), {
+        type: 'module',
+      });
+      this.worker.onmessage = (e: MessageEvent<BifurcationComputeResult>) => {
+        this.onComputeResult(e.data);
+      };
+      this.worker.onerror = (e) => {
+        console.warn('Bifurcation worker failed, computing on main thread:', e);
+        this.worker?.terminate();
+        this.worker = null;
+        this.computeSync();
+      };
+    } catch (e) {
+      console.warn('Bifurcation worker unavailable, computing on main thread:', e);
+      this.worker = null;
+    }
+  }
+
+  private currentKey(): string {
+    if (!this.model || !this.canvas.width || !this.canvas.height) return '';
+    return [
+      this.model.id,
+      JSON.stringify(this.model.getParameterState()),
+      this.rRange.min.toFixed(6),
+      this.rRange.max.toFixed(6),
+      this.canvas.width,
+      this.canvas.height,
+    ].join('|');
+  }
+
+  private buildRequest(): BifurcationComputeRequest | null {
+    if (!this.model || !this.canvas.width || !this.canvas.height) return null;
+    const params = this.model.getParameterState();
+    return {
+      id: ++this.computeId,
+      modelId: this.model.id,
+      polyK: params.k,
+      rMin: this.rRange.min,
+      rMax: this.rRange.max,
+      width: this.canvas.width,
+      height: this.canvas.height,
+      xMin: this.xRange.min,
+      xMax: this.xRange.max,
+      orbitDensity: this.orbitDensity,
+      computeLyapunov: this.showLyapunov,
+    };
+  }
+
+  private requestCompute(): void {
+    const req = this.buildRequest();
+    if (!req) return;
+    if (this.worker) {
+      this.worker.postMessage(req);
+    } else {
+      this.computeSync();
+    }
+  }
+
+  private computeSync(): void {
+    if (!this.model) return;
+    const req = this.buildRequest();
+    if (!req) return;
+    const result = computeBifurcationData(req, this.model);
+    this.onComputeResult(result);
+  }
+
+  private onComputeResult(res: BifurcationComputeResult): void {
+    if (res.id !== this.computeId) return;
+    const width = this.canvas.width;
+    const height = this.canvas.height;
+    if (!width || !height || res.density.length !== width * height) return;
+
+    const off = document.createElement('canvas');
+    off.width = width;
+    off.height = height;
+    const octx = off.getContext('2d');
+    if (!octx) return;
+    const img = octx.createImageData(width, height);
+    colorizeDensity(res.density, res.maxDensity, img.data);
+    octx.putImageData(img, 0, 0);
+
+    this.cacheCanvas = off;
+    this.lyapunovNorm = res.lyapunovNorm ?? null;
+    this.cacheKey = this.currentKey();
+    this.render();
+  }
+
+  setModel(model: BifurcationModel): void {
+    this.model = model;
+    this.rRange = { ...model.rRange };
+    this.xRange = { ...model.xRange };
+    this.selectedR = model.clampR(this.selectedR);
+    this.cacheCanvas = null;
+    this.lyapunovNorm = null;
+    this.cacheKey = '';
+    this.requestCompute();
+    this.render();
+  }
+
+  resize(): void {
+    const rect = this.canvas.parentElement?.getBoundingClientRect() ?? { width: 400, height: 300 };
+    const dpr = Math.max(window.devicePixelRatio || 1, 2);
+    this.canvas.width = Math.floor(rect.width * dpr);
+    this.canvas.height = Math.floor(rect.height * dpr);
+    this.canvas.style.width = `${rect.width}px`;
+    this.canvas.style.height = `${rect.height}px`;
+    this.ctx.imageSmoothingEnabled = false;
+    this.render();
+  }
+
+  setSelectedR(r: number): void {
+    if (!this.model) return;
+    this.selectedR = this.model.clampR(r);
+    this.render();
+  }
+
+  setSelectedC(c: number): void {
+    if (!this.model) return;
+    const r = this.model.cToR(c);
+    this.setSelectedR(r);
+  }
+
+  toggleLyapunov(show: boolean): void {
+    if (this.showLyapunov === show) return;
+    this.showLyapunov = show;
+    // Lyapunov array may not exist yet (was computed with it off).
+    if (show && (!this.lyapunovNorm || this.lyapunovNorm.length !== this.canvas.width)) {
+      this.cacheKey = '';
+      this.requestCompute();
+    }
+    this.render();
+  }
+
+  private rToPixelX(r: number): number {
+    return ((r - this.rRange.min) / (this.rRange.max - this.rRange.min)) * this.canvas.width;
+  }
+
+  private pixelXToR(px: number): number {
+    return this.rRange.min + (px / this.canvas.width) * (this.rRange.max - this.rRange.min);
+  }
+
+  render(): void {
+    this._scheduleRender();
+  }
+
+  private _scheduleRender(): void {
+    if (this._rafId !== null) return;
+    this._dirty = true;
+    this._rafId = requestAnimationFrame(() => {
+      this._rafId = null;
+      if (this._dirty) {
+        this._dirty = false;
+        this._render();
+      }
+    });
+  }
+
+  private _render(): void {
+    if (!this.canvas.width || !this.canvas.height || !this.model) return;
+
+    const width = this.canvas.width;
+    const height = this.canvas.height;
+
+    if (this.currentKey() !== this.cacheKey) {
+      this.requestCompute();
+    }
+
+    this.ctx.fillStyle = '#040714';
+    this.ctx.fillRect(0, 0, width, height);
+
+    // Grid lines
+    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
+    this.ctx.lineWidth = 1;
+    const stepR = (this.rRange.max - this.rRange.min) / 6;
+    for (let r = this.rRange.min; r <= this.rRange.max; r += stepR) {
+      const px = this.rToPixelX(r);
+      this.ctx.beginPath();
+      this.ctx.moveTo(px, 0);
+      this.ctx.lineTo(px, height);
+      this.ctx.stroke();
+    }
+
+    // Cached density bitmap
+    if (this.cacheCanvas) {
+      this.ctx.imageSmoothingEnabled = false;
+      this.ctx.drawImage(this.cacheCanvas, 0, 0, width, height);
+    }
+
+    // Cached Lyapunov curve
+    if (this.showLyapunov && this.lyapunovNorm && this.lyapunovNorm.length === width) {
+      this.drawLyapunovFromCache(width, height);
+    }
+
+    // Selected r cursor
+    const selPx = this.rToPixelX(this.selectedR);
+    this.ctx.save();
+    this.ctx.beginPath();
+    this.ctx.moveTo(selPx, 0);
+    this.ctx.lineTo(selPx, height);
+    this.ctx.strokeStyle = '#f43f5e';
+    this.ctx.lineWidth = 3;
+    this.ctx.shadowColor = '#f43f5e';
+    this.ctx.shadowBlur = 14;
+    this.ctx.stroke();
+
+    this.ctx.fillStyle = '#ffffff';
+    this.ctx.font = 'bold 12px "JetBrains Mono", monospace';
+    this.ctx.fillText(`r = ${this.selectedR.toFixed(4)}`, Math.min(selPx + 8, width - 95), 24);
+    this.ctx.restore();
+  }
+
+  private drawLyapunovFromCache(width: number, height: number): void {
+    const arr = this.lyapunovNorm;
+    if (!arr) return;
+    this.ctx.save();
+    this.ctx.beginPath();
+    let prevPy: number | null = null;
+    for (let s = 0; s < width; s++) {
+      const px = s;
+      const norm = arr[s] ?? 0;
+      const py = (1.0 - norm) * height;
+      if (prevPy !== null && Math.abs(py - prevPy) > height * 0.3) {
+        this.ctx.stroke();
+        this.ctx.beginPath();
+        this.ctx.moveTo(px, py);
+      } else if (s === 0) {
+        this.ctx.moveTo(px, py);
+      } else {
+        this.ctx.lineTo(px, py);
+      }
+      prevPy = py;
+    }
+    this.ctx.strokeStyle = '#f59e0b';
+    this.ctx.lineWidth = 2.5;
+    this.ctx.shadowColor = '#f59e0b';
+    this.ctx.shadowBlur = 10;
+    this.ctx.stroke();
+
+    const zeroPy = (1.0 - 2.0 / 3.0) * height;
+    this.ctx.beginPath();
+    this.ctx.setLineDash([5, 5]);
+    this.ctx.moveTo(0, zeroPy);
+    this.ctx.lineTo(width, zeroPy);
+    this.ctx.strokeStyle = 'rgba(255, 170, 0, 0.4)';
+    this.ctx.stroke();
+    this.ctx.restore();
+  }
+
+  resetZoom(): void {
+    if (!this.model) return;
+    this.rRange = { ...this.model.rRange };
+    this.cacheCanvas = null;
+    this.lyapunovNorm = null;
+    this.cacheKey = '';
+    this.requestCompute();
+    this.render();
+  }
+
+  private initEvents(): void {
+    let isDraggingR = false;
+
+    const startDrag = (clientX: number): void => {
+      isDraggingR = true;
+      const rect = this.canvas.getBoundingClientRect();
+      const px = (clientX - rect.left) * (this.canvas.width / rect.width);
+      const newR = this.pixelXToR(px);
+      this.setSelectedR(newR);
+      if (this.onSelectR) this.onSelectR(newR);
+    };
+
+    const moveDrag = (clientX: number): void => {
+      if (!isDraggingR) return;
+      const rect = this.canvas.getBoundingClientRect();
+      const px = (clientX - rect.left) * (this.canvas.width / rect.width);
+      const newR = this.pixelXToR(px);
+      this.setSelectedR(newR);
+      if (this.onSelectR) this.onSelectR(newR);
+    };
+
+    const endDrag = (): void => {
+      isDraggingR = false;
+    };
+
+    this.canvas.addEventListener('mousedown', (e) => startDrag(e.clientX));
+    window.addEventListener('mousemove', (e) => moveDrag(e.clientX));
+    window.addEventListener('mouseup', endDrag);
+
+    this.canvas.addEventListener(
+      'touchstart',
+      (e) => {
+        e.preventDefault();
+        startDrag(e.touches[0]!.clientX);
+      },
+      { passive: false },
+    );
+
+    window.addEventListener(
+      'touchmove',
+      (e) => {
+        if (!isDraggingR) return;
+        e.preventDefault();
+        moveDrag(e.touches[0]!.clientX);
+      },
+      { passive: false },
+    );
+
+    window.addEventListener('touchend', endDrag);
+
+    this.canvas.addEventListener(
+      'wheel',
+      (e) => {
+        e.preventDefault();
+        const rect = this.canvas.getBoundingClientRect();
+        const px = (e.clientX - rect.left) * (this.canvas.width / rect.width);
+        const mouseR = this.pixelXToR(px);
+
+        const zoom = e.deltaY < 0 ? 0.8 : 1.25;
+        const span = (this.rRange.max - this.rRange.min) * zoom;
+        const ratio = (mouseR - this.rRange.min) / (this.rRange.max - this.rRange.min);
+
+        if (!this.model) return;
+        const newMin = Math.max(this.model.rRange.min, mouseR - span * ratio);
+        const newMax = Math.min(this.model.rRange.max, mouseR + span * (1 - ratio));
+
+        if (newMax - newMin > 0.005) {
+          this.rRange.min = newMin;
+          this.rRange.max = newMax;
+          this.cacheCanvas = null;
+          this.lyapunovNorm = null;
+          this.cacheKey = '';
+          this.requestCompute();
+          this.render();
+        }
+      },
+      { passive: false },
+    );
+  }
+}
