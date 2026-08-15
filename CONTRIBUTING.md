@@ -31,7 +31,7 @@ npm run test           # Vitest (núcleo matemático)
 3. `npm run format` aplicado.
 4. `npm run test` en verde (los tests matemáticos nuevos si cambiaste modelos).
 5. Si cambiaste fórmulas o modelos matemáticos, documenta la fuente o
-   derivación en el ADR correspondiente (`docs/adr/`).
+   derivación en el ADR correspondiente (`adr/`).
 
 ## Estructura
 
