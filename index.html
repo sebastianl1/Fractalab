@@ -22,8 +22,32 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 
-    <script type="module" crossorigin src="./assets/index-DY9Ei0Mz.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-Ysk3ai_g.css">
+
+    <!-- Structured data: the tool as an educational resource -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "FractaLab Sl",
+        "description": "Laboratorio virtual interactivo de dinámica no lineal, teoría del caos y el conjunto de Mandelbrot.",
+        "inLanguage": ["es", "en"],
+        "about": {
+          "@type": "LearningResource",
+          "learningResourceType": "Interactive Exercise",
+          "educationalLevel": "tertiary",
+          "teaches": [
+            "Dinámica no lineal",
+            "Teoría del caos",
+            "Duplicación de periodo",
+            "Constante de Feigenbaum",
+            "Exponente de Lyapunov",
+            "Conjunto de Mandelbrot"
+          ]
+        }
+      }
+    </script>
+    <script type="module" crossorigin src="./assets/index-BjnZhe7n.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-CTdzK0CQ.css">
   </head>
   <body>
     <!-- Premium Header Navbar -->
@@ -378,13 +402,7 @@
 
     <!-- ======================= VIEW: VIDEOS ======================= -->
     <div data-view="videos" class="content-view">
-      <section class="view-placeholder">
-        <h2 data-i18n="videos.title">🎬 Videolecciones</h2>
-        <p data-i18n="videos.subtitle">
-          Próximamente: videolecciones guiadas paso a paso. Por ahora puedes explorar los módulos
-          interactivos.
-        </p>
-      </section>
+      <section id="videos-view" class="videos-view"></section>
     </div>
 
     <!-- ======================= VIEW: RECURSOS ======================= -->
