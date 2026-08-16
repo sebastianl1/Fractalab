@@ -37,6 +37,8 @@ export class BifurcationCanvas {
 
   private _rafId: number | null = null;
   private _dirty = false;
+  private _sizeReady = false;
+  private _resizeTimer: number | null = null;
 
   constructor(canvasElement: HTMLCanvasElement, onSelectR: (r: number) => void) {
     this.canvas = canvasElement;
@@ -145,8 +147,10 @@ export class BifurcationCanvas {
     this.cacheCanvas = null;
     this.lyapunovNorm = null;
     this.cacheKey = '';
-    this.requestCompute();
-    this.render();
+    if (this._sizeReady) {
+      this.requestCompute();
+      this.render();
+    }
   }
 
   resize(): void {
@@ -157,7 +161,16 @@ export class BifurcationCanvas {
     this.canvas.style.width = `${rect.width}px`;
     this.canvas.style.height = `${rect.height}px`;
     this.ctx.imageSmoothingEnabled = false;
-    this.render();
+
+    this._sizeReady = true;
+
+    // Debounce compute during rapid resize (window drag, tab switch)
+    if (this._resizeTimer !== null) window.clearTimeout(this._resizeTimer);
+    this._resizeTimer = window.setTimeout(() => {
+      this._resizeTimer = null;
+      this.cacheKey = '';
+      this.render();
+    }, 150);
   }
 
   setSelectedR(r: number): void {
@@ -208,7 +221,7 @@ export class BifurcationCanvas {
   }
 
   private _render(): void {
-    if (!this.canvas.width || !this.canvas.height || !this.model) return;
+    if (!this._sizeReady || !this.canvas.width || !this.canvas.height || !this.model) return;
 
     const width = this.canvas.width;
     const height = this.canvas.height;
@@ -237,6 +250,14 @@ export class BifurcationCanvas {
     if (this.cacheCanvas) {
       this.ctx.imageSmoothingEnabled = false;
       this.ctx.drawImage(this.cacheCanvas, 0, 0, width, height);
+    } else if (this.model) {
+      // Placeholder while computing
+      this.ctx.fillStyle = colors.ink;
+      this.ctx.font = '14px "JetBrains Mono", monospace';
+      this.ctx.textAlign = 'center';
+      this.ctx.globalAlpha = 0.4;
+      this.ctx.fillText('computando…', width / 2, height / 2);
+      this.ctx.globalAlpha = 1;
     }
 
     // Cached Lyapunov curve

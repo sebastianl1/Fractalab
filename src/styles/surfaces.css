@@ -80,53 +80,15 @@
     filter 0.25s ease;
 }
 
-/* Corner brackets (HUD viewfinder) */
-.canvas-panel::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(var(--cyan), var(--cyan)) top left / 14px 1px no-repeat,
-    linear-gradient(var(--cyan), var(--cyan)) top left / 1px 14px no-repeat,
-    linear-gradient(var(--violet), var(--violet)) top right / 14px 1px no-repeat,
-    linear-gradient(var(--violet), var(--violet)) top right / 1px 14px no-repeat,
-    linear-gradient(var(--violet), var(--violet)) bottom left / 14px 1px no-repeat,
-    linear-gradient(var(--violet), var(--violet)) bottom left / 1px 14px no-repeat,
-    linear-gradient(var(--cyan), var(--cyan)) bottom right / 14px 1px no-repeat,
-    linear-gradient(var(--cyan), var(--cyan)) bottom right / 1px 14px no-repeat;
-  opacity: 0.28;
-  z-index: 3;
-  transition: opacity 0.25s ease;
-}
-
-/* Scanline overlay (barely perceptible) */
-.canvas-panel::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(180, 200, 255, 0.008) 0 1px,
-    transparent 1px 4px
-  );
-  z-index: 2;
-}
-
 .canvas-panel:hover {
   border-color: var(--border-strong);
   transform: translateY(-2px);
-  filter: drop-shadow(0 12px 30px rgba(0, 0, 0, 0.5));
-}
-
-.canvas-panel:hover::before {
-  opacity: 0.5;
+  box-shadow: var(--shadow-md), 0 0 24px rgba(232, 184, 75, 0.06);
 }
 
 .panel-header {
   position: relative;
-  z-index: 4;
+  z-index: 10;
   display: flex;
   align-items: center;
   gap: 0.5rem;

@@ -371,5 +371,16 @@ document.addEventListener('DOMContentLoaded', () => {
   initOrrery();
 
   syncUI();
-  setTimeout(handleResize, 100);
+
+  // Wait for layout to settle before sizing canvases (prevents size-0 computes).
+  const waitForLayout = (attempts = 0): void => {
+    handleResize();
+    const anyPanel = document.querySelector<HTMLElement>('.panel-body');
+    if (!anyPanel || anyPanel.getBoundingClientRect().height > 0 || attempts >= 15) {
+      handleResize(); // final resize
+      return;
+    }
+    requestAnimationFrame(() => waitForLayout(attempts + 1));
+  };
+  requestAnimationFrame(() => waitForLayout());
 });
