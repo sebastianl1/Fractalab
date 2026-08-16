@@ -10,7 +10,7 @@ import { BifurcationCanvas } from './components/BifurcationCanvas.js';
 import { CobwebCanvas } from './components/CobwebCanvas.js';
 import { ThreePhaseScene } from './components/ThreePhaseScene.js';
 import { Sonifier } from './components/Sonifier.js';
-import type { SonifyMode } from './components/Sonifier.js';
+import type { MusicalMode } from './components/Sonifier.js';
 import { InspectorPanel } from './components/InspectorPanel.js';
 import { TheoryModal } from './components/TheoryModal.js';
 import { EngineeringCasePanel } from './components/EngineeringCasePanel.js';
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const videosContainer = $<HTMLElement>('videos-view');
   const resourcesContainer = $<HTMLElement>('resources-view');
   const selectSoundMode = $<HTMLSelectElement>('select-sound-mode');
-  const sliderTempo = $<HTMLInputElement>('slider-tempo');
+  const selectPreset = $<HTMLSelectElement>('select-preset');
   const labelNote = $<HTMLElement>('label-note');
 
   const inspector = new InspectorPanel(inspectorContainer);
@@ -272,11 +272,14 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   selectSoundMode.addEventListener('change', (e) => {
-    sonifier.mode = (e.target as HTMLSelectElement).value as SonifyMode;
+    sonifier.musicalMode = (e.target as HTMLSelectElement).value as MusicalMode;
+    // Reset preset to custom when manually changing mode
+    selectPreset.value = '';
   });
 
-  sliderTempo.addEventListener('input', (e) => {
-    sonifier.setTempo(parseInt((e.target as HTMLInputElement).value, 10));
+  selectPreset.addEventListener('change', (e) => {
+    const presetId = (e.target as HTMLSelectElement).value;
+    if (presetId) sonifier.applyPreset(presetId);
   });
 
   btnTheory.addEventListener('click', () => theoryModal.open());

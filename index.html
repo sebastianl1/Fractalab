@@ -234,19 +234,25 @@
             >Sonido:</label
           >
           <select id="select-sound-mode">
-            <option value="scale" data-i18n="ctrl.mode.scale">Escala pentatónica</option>
-            <option value="glissando" data-i18n="ctrl.mode.glissando">Glissando continuo</option>
+            <option value="pentatonicMinor" data-i18n="sound.mode.pentMinor">Pentatónica menor</option>
+            <option value="pentatonicMajor" data-i18n="sound.mode.pentMajor">Pentatónica mayor</option>
+            <option value="naturalMinor" data-i18n="sound.mode.minor">Menor natural</option>
+            <option value="lydian" data-i18n="sound.mode.lydian">Lidio</option>
+            <option value="dorian" data-i18n="sound.mode.dorian">Dórico</option>
+            <option value="blues" data-i18n="sound.mode.blues">Blues</option>
+            <option value="chromatic" data-i18n="sound.mode.chromatic">Cromática</option>
+            <option value="chords" data-i18n="sound.mode.chords">Acordes piano</option>
+            <option value="glissando" data-i18n="sound.mode.glissando">Glissando continuo</option>
           </select>
-          <label class="control-label" for="slider-tempo" data-i18n="ctrl.tempo">Tempo:</label>
-          <input
-            type="range"
-            id="slider-tempo"
-            min="80"
-            max="320"
-            step="10"
-            value="140"
-            style="width: 90px"
-          />
+          <label class="control-label" for="select-preset" data-i18n="sound.preset"
+            >Estilo:</label
+          >
+          <select id="select-preset">
+            <option value="" data-i18n="sound.mode.custom">Personalizado</option>
+            <option value="melancholic" data-i18n="sound.preset.melancholic">Melancólica (Einaudi)</option>
+            <option value="classic" data-i18n="sound.preset.classic">Clásica (Beethoven)</option>
+            <option value="serenade" data-i18n="sound.preset.serenade">Serenata (Debussy)</option>
+          </select>
           <span id="label-note" class="label-highlight">—</span>
         </div>
 
