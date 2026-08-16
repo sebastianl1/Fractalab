@@ -403,8 +403,10 @@ export class BifurcationCanvas {
           const newMin = Math.max(this.model.rRange.min, mid - span / 2);
           const newMax = Math.min(this.model.rRange.max, mid + span / 2);
           if (newMax - newMin > 0.005) {
+            const cursorPx = this.rToPixelX(this.selectedR);
             this.rRange.min = newMin;
             this.rRange.max = newMax;
+            this.selectedR = this.pixelXToR(cursorPx);
             this.cacheKey = '';
             this.requestCompute();
             this.render();
@@ -442,8 +444,15 @@ export class BifurcationCanvas {
         const newMax = Math.min(this.model.rRange.max, mouseR + span * (1 - ratio));
 
         if (newMax - newMin > 0.005) {
+          // Remember cursor pixel position before zoom
+          const cursorPx = this.rToPixelX(this.selectedR);
+
           this.rRange.min = newMin;
           this.rRange.max = newMax;
+
+          // Keep the cursor at the same screen position after zoom
+          this.selectedR = this.pixelXToR(cursorPx);
+
           this.cacheKey = '';
           this.requestCompute();
           this.render();
