@@ -101,4 +101,35 @@ export const GUIDED_EXERCISES: GuidedExercise[] = [
     ],
     hint: 'Cambia el modelo arriba a "Mapa Seno" y observa cómo comparte la misma estructura de cascada.',
   },
+  {
+    id: 'ex5',
+    title: '🏭 Reto 5: Aplicaciones Reales en Ingeniería',
+    description:
+      'Explora un caso real de ingeniería donde la dinámica caótica tiene implicaciones prácticas.',
+    instruction:
+      'En la pestaña Laboratorio, abre la sección "Aplicaciones Reales en Ingeniería" y selecciona el caso "Informática". Observa cómo el mapa polinómico genera secuencias pseudoaleatorias.',
+    modelId: 'logistic',
+    targetR: 3.9,
+    tolerance: 0.1,
+    question: '¿Qué tipo de secuencia genera un sistema determinista en régimen caótico?',
+    options: [
+      {
+        text: 'Secuencia periódica exacta con período fijo',
+        correct: false,
+      },
+      {
+        text: 'Secuencia pseudoaleatoria de alta entropía, determinista pero impredecible',
+        correct: true,
+      },
+      {
+        text: 'Secuencia constante sin variaciones',
+        correct: false,
+      },
+      {
+        text: 'Secuencia completamente aleatoria (estocástica)',
+        correct: false,
+      },
+    ],
+    hint: 'Ajusta r ≈ 3.9 en el mapa logístico. La diferencia clave con el azar: el sistema es determinista (misma x₀ → misma órbita), pero la sensibilidad a la condición inicial lo hace impredecible.',
+  },
 ];

@@ -83,7 +83,9 @@
 .canvas-panel:hover {
   border-color: var(--border-strong);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md), 0 0 24px rgba(232, 184, 75, 0.06);
+  box-shadow:
+    var(--shadow-md),
+    0 0 24px rgba(232, 184, 75, 0.06);
 }
 
 .panel-header {
@@ -808,30 +810,50 @@ input[type='range']::-moz-range-thumb {
   color: var(--gold);
 }
 
-/* Orrery — refined editorial accent */
+/* Bohr atom — animated quantum hero */
 .lab-hero-visual {
   position: relative;
-  min-height: 190px;
+  min-height: 200px;
   display: none;
 }
 
 @media (min-width: 769px) {
   .lab-hero-visual {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
-.orrery {
-  position: absolute;
-  top: 50%;
-  left: 50%;
+.atom-visual {
+  position: relative;
   width: 220px;
   height: 220px;
-  transform: translate(-50%, -50%);
-  opacity: 0.9;
 }
 
-.orrery-core {
+/* Probability cloud */
+.prob-cloud {
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232, 184, 75, 0.12), transparent 70%);
+  animation: cloud-breathe 4s ease-in-out infinite;
+}
+
+@keyframes cloud-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.7;
+  }
+}
+
+/* Nucleus */
+.nucleus {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -846,76 +868,112 @@ input[type='range']::-moz-range-thumb {
   color: #241a00;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, #f6e3b0, var(--gold) 60%, #b98a2a);
-  box-shadow: 0 0 28px rgba(232, 184, 75, 0.4);
+  animation: nucleus-pulse 3s ease-in-out infinite;
+  z-index: 2;
 }
 
-.orbit-ring {
+@keyframes nucleus-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(232, 184, 75, 0.4);
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    box-shadow: 0 0 36px rgba(232, 184, 75, 0.65);
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}
+
+/* Electron orbits (rotating ellipses) */
+.orbit {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  border: 1px solid rgba(180, 200, 255, 0.18);
   border-radius: 50%;
+  border: 1px solid rgba(180, 200, 255, 0.16);
 }
 
-.orbit-ring.r1 {
+.orbit-1 {
   width: 108px;
-  height: 108px;
+  height: 68px;
+  transform: translate(-50%, -50%) rotate(120deg);
+  animation: orbit-spin-1 6s linear infinite;
 }
 
-.orbit-ring.r2 {
-  width: 168px;
-  height: 168px;
-  border-color: rgba(232, 184, 75, 0.13);
-  animation: orbit-spin 30s linear infinite;
+.orbit-2 {
+  width: 164px;
+  height: 98px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  border-color: rgba(127, 216, 240, 0.14);
+  animation: orbit-spin-2 12s linear infinite reverse;
 }
 
-.orbit-ring.r3 {
+.orbit-3 {
   width: 220px;
-  height: 220px;
+  height: 130px;
+  transform: translate(-50%, -50%) rotate(-30deg);
   border-color: rgba(142, 124, 195, 0.12);
-  animation: orbit-spin 52s linear infinite reverse;
+  animation: orbit-spin-3 20s linear infinite;
 }
 
-@keyframes orbit-spin {
+@keyframes orbit-spin-1 {
   from {
-    transform: translate(-50%, -50%) rotate(0deg);
+    transform: translate(-50%, -50%) rotate(120deg);
   }
   to {
-    transform: translate(-50%, -50%) rotate(360deg);
+    transform: translate(-50%, -50%) rotate(480deg);
   }
 }
 
-.planet {
+@keyframes orbit-spin-2 {
+  from {
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(-315deg);
+  }
+}
+
+@keyframes orbit-spin-3 {
+  from {
+    transform: translate(-50%, -50%) rotate(-30deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(330deg);
+  }
+}
+
+/* Electrons (fixed at the edge of each orbit — the orbit's rotation moves them) */
+.electron {
   position: absolute;
   border-radius: 50%;
 }
 
-.planet.p1 {
-  top: -7px;
+.electron.e1 {
+  top: -5px;
   left: 50%;
-  width: 12px;
-  height: 12px;
+  width: 8px;
+  height: 8px;
   background: radial-gradient(circle at 35% 30%, #c8eefb, var(--cyan));
-  box-shadow: 0 0 10px rgba(127, 216, 240, 0.55);
+  box-shadow: 0 0 10px rgba(127, 216, 240, 0.65);
 }
 
-.planet.p2 {
-  top: 50%;
-  right: -8px;
-  width: 9px;
-  height: 9px;
+.electron.e2 {
+  bottom: -4px;
+  right: 15%;
+  width: 6px;
+  height: 6px;
   background: radial-gradient(circle at 35% 30%, #d5c9ef, var(--violet));
-  box-shadow: 0 0 9px rgba(142, 124, 195, 0.55);
+  box-shadow: 0 0 8px rgba(142, 124, 195, 0.6);
 }
 
-.planet.p3 {
-  bottom: -8px;
-  left: 18%;
-  width: 7px;
-  height: 7px;
+.electron.e3 {
+  top: -4px;
+  left: 20%;
+  width: 5px;
+  height: 5px;
   background: radial-gradient(circle at 35% 30%, #f3c8d2, var(--pink));
-  box-shadow: 0 0 8px rgba(241, 106, 122, 0.5);
+  box-shadow: 0 0 7px rgba(241, 106, 122, 0.55);
 }
 
 /* ---------- Footer ---------- */

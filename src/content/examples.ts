@@ -124,6 +124,44 @@ export const EXAMPLE_CASES: ExampleCase[] = [
     r: 0.92,
   },
 
+  // ---- Additional mathematical milestones ----
+  {
+    id: 'ex-superstable',
+    icon: '⭐',
+    category: 'math',
+    title: { es: 'Punto Superestable (λ mínimo)', en: 'Superstable point (λ minimum)' },
+    description: {
+      es: 'El valor de r donde la órbita pasa exactamente por el punto crítico: el exponente de Lyapunov alcanza su mínimo absoluto.',
+      en: 'The value of r where the orbit passes exactly through the critical point, minimising the Lyapunov exponent.',
+    },
+    modelId: 'logistic',
+    r: Math.PI,
+  },
+  {
+    id: 'ex-period5',
+    icon: '🎵',
+    category: 'math',
+    title: { es: 'Ventana de periodo 5', en: 'Period-5 window' },
+    description: {
+      es: 'Dentro del caos, emerge una ventana estable de periodo 5: orden esporádico en medio del caos.',
+      en: 'Inside chaos, a stable period-5 window emerges: sporadic order amid chaos.',
+    },
+    modelId: 'logistic',
+    r: 3.9057,
+  },
+  {
+    id: 'ex-cubic-period4',
+    icon: '🧊',
+    category: 'math',
+    title: { es: 'Cúbico en periodo 4', en: 'Cubic at period 4' },
+    description: {
+      es: 'El mapa cúbico simétrico en un ciclo de periodo 4, mostrando duplicación de periodo.',
+      en: 'The symmetric cubic map in a period-4 cycle showing period doubling.',
+    },
+    modelId: 'cubic',
+    r: 1.75,
+  },
+
   // ---- Engineering cases --------------------------------------------------
   {
     id: 'eng-electrical',
