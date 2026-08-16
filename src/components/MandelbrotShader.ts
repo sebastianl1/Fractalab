@@ -1,10 +1,6 @@
 import * as THREE from 'three';
 import type { BifurcationModel } from '../math/models/BaseModel.js';
 import { viz } from '../core/theme.js';
-import type {
-  MandelbrotComputeRequest,
-  MandelbrotComputeResult,
-} from '../math/mandelbrotCompute.js';
 
 const RECT_FALLBACK = { width: 400, height: 300, left: 0, top: 0 };
 
@@ -120,9 +116,11 @@ export class MandelbrotShader {
   dragStart = { x: 0, y: 0 };
   dragCenterStart = { x: 0, y: 0 };
 
+  private isPinching = false;
+  private lastPinchDist = 0;
+  private pinchCenter = { x: 0, y: 0 };
+
   private useWebGL = true;
-  private mandelbrotWorker: Worker | null = null;
-  private mandelbrotComputeId = 0;
 
   constructor(canvasElement: HTMLCanvasElement, onSelectC: (c: number) => void) {
     this.canvas = canvasElement;
@@ -136,69 +134,6 @@ export class MandelbrotShader {
     this.initGL();
     if (!this.renderer) this.useWebGL = false;
     this.initEvents();
-  }
-
-  private ensureFallbackWorker(): void {
-    if (this.mandelbrotWorker) return;
-    try {
-      this.mandelbrotWorker = new Worker(
-        new URL('../workers/mandelbrot.worker.ts', import.meta.url),
-        { type: 'module' },
-      );
-      this.mandelbrotWorker.onmessage = (e: MessageEvent<MandelbrotComputeResult>) => {
-        this.onMandelbrotResult(e.data);
-      };
-      this.mandelbrotWorker.onerror = (e) => {
-        console.warn('Mandelbrot worker failed, using sync fallback:', e);
-        this.mandelbrotWorker?.terminate();
-        this.mandelbrotWorker = null;
-      };
-    } catch (e) {
-      console.warn('Mandelbrot worker unavailable:', e);
-      this.mandelbrotWorker = null;
-    }
-  }
-
-  private buildMandelbrotRequest(): MandelbrotComputeRequest | null {
-    if (!this.canvas.width || !this.canvas.height) return null;
-    return {
-      id: ++this.mandelbrotComputeId,
-      centerX: this.centerX,
-      centerY: this.centerY,
-      zoom: this.zoom,
-      maxIter: this.maxIter,
-      width: this.canvas.width,
-      height: this.canvas.height,
-      palette: this.palette,
-      step: this.isDragging ? 2 : 1,
-    };
-  }
-
-  private onMandelbrotResult(res: MandelbrotComputeResult): void {
-    if (res.id !== this.mandelbrotComputeId) return;
-    const img = new ImageData(new Uint8ClampedArray(res.data), res.width, res.height);
-    const temp = document.createElement('canvas');
-    temp.width = res.width;
-    temp.height = res.height;
-    const tctx = temp.getContext('2d');
-    if (!tctx) return;
-    tctx.putImageData(img, 0, 0);
-    this.ctx.imageSmoothingEnabled = res.step === 1;
-    this.ctx.drawImage(temp, 0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.imageSmoothingEnabled = false;
-    this.renderOverlay();
-  }
-
-  /** Async fallback render: Web Worker when available, sync CPU otherwise. */
-  private renderFallbackAsync(): void {
-    this.ensureFallbackWorker();
-    if (this.mandelbrotWorker) {
-      const req = this.buildMandelbrotRequest();
-      if (req) this.mandelbrotWorker.postMessage(req);
-    } else {
-      this.renderFallback();
-      this.renderOverlay();
-    }
   }
 
   private createOverlay(): void {
@@ -385,7 +320,8 @@ export class MandelbrotShader {
       this.material.uniforms.uCenter!.value.set(this.centerX, this.centerY);
       this.renderGL();
     } else {
-      this.renderFallbackAsync();
+      this.renderFallback();
+      this.renderOverlay();
     }
     this.renderOverlay();
   }
@@ -401,7 +337,8 @@ export class MandelbrotShader {
       this.material.uniforms.uPalette!.value = index;
       this.renderGL();
     } else {
-      this.renderFallbackAsync();
+      this.renderFallback();
+      this.renderOverlay();
     }
     this.renderOverlay();
   }
@@ -419,7 +356,8 @@ export class MandelbrotShader {
       this.canvas.height = Math.floor(rect.height * dpr);
       this.canvas.style.width = rect.width + 'px';
       this.canvas.style.height = rect.height + 'px';
-      this.renderFallbackAsync();
+      this.renderFallback();
+      this.renderOverlay();
     }
 
     this.overlayCanvas.width = this.canvas.width;
@@ -486,7 +424,8 @@ export class MandelbrotShader {
     if (this.useWebGL && this.renderer) {
       this.renderGL();
     } else {
-      this.renderFallbackAsync();
+      this.renderFallback();
+      this.renderOverlay();
     }
     this.renderOverlay();
   }
@@ -514,7 +453,8 @@ export class MandelbrotShader {
       this.material.uniforms.uMaxIter!.value = this.maxIter;
       this.renderGL();
     } else {
-      this.renderFallbackAsync();
+      this.renderFallback();
+      this.renderOverlay();
     }
     this.renderOverlay();
   }
@@ -552,14 +492,16 @@ export class MandelbrotShader {
         this.renderGL();
         this.renderOverlay();
       } else {
-        this.renderFallbackAsync();
+        this.renderFallback();
+        this.renderOverlay();
       }
     };
 
     const endDrag = (): void => {
       this.isDragging = false;
       if (!this.useWebGL || !this.renderer) {
-        this.renderFallbackAsync();
+        this.renderFallback();
+        this.renderOverlay();
         this.renderOverlay();
       }
     };
@@ -587,6 +529,22 @@ export class MandelbrotShader {
       'touchstart',
       (e) => {
         e.preventDefault();
+        if (e.touches.length === 2) {
+          // Pinch-to-zoom: record initial distance and center
+          this.isPinching = true;
+          const t0 = e.touches[0];
+          const t1 = e.touches[1];
+          if (t0 && t1) {
+            this.lastPinchDist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
+            this.pinchCenter = {
+              x: (t0.clientX + t1.clientX) / 2,
+              y: (t0.clientY + t1.clientY) / 2,
+            };
+            this.dragCenterStart = { x: this.centerX, y: this.centerY };
+          }
+          return;
+        }
+        this.isPinching = false;
         startDrag(e);
       },
       { passive: false },
@@ -595,14 +553,52 @@ export class MandelbrotShader {
     window.addEventListener(
       'touchmove',
       (e) => {
-        if (!this.isDragging) return;
         e.preventDefault();
+        if (this.isPinching && e.touches.length === 2) {
+          // Pinch-to-zoom
+          const t0 = e.touches[0];
+          const t1 = e.touches[1];
+          if (!t0 || !t1) return;
+          const dist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
+          const center = target.getBoundingClientRect();
+          const px = this.pinchCenter.x - center.left;
+          const py = this.pinchCenter.y - center.top;
+          const comp = this.pixelToComplex(px, py);
+
+          const scale = dist / this.lastPinchDist;
+          this.zoom *= 1 / scale;
+          this.zoom = Math.max(0.001, this.zoom);
+          this.maxIter = Math.min(2000, Math.floor(100 + Math.pow(1 / this.zoom, 0.4) * 200));
+          this.lastPinchDist = dist;
+
+          // Keep center stable
+          const newCr = this.centerX;
+          const newCi = this.centerY;
+          this.centerX += comp.cr - newCr;
+          this.centerY += comp.ci - newCi;
+
+          if (this.useWebGL && this.renderer && this.material) {
+            this.material.uniforms.uCenter!.value.set(this.centerX, this.centerY);
+            this.material.uniforms.uZoom!.value = this.zoom;
+            this.material.uniforms.uMaxIter!.value = this.maxIter;
+            this.renderGL();
+            this.renderOverlay();
+          } else {
+            this.renderFallback();
+            this.renderOverlay();
+          }
+          return;
+        }
+        if (!this.isDragging) return;
         moveDrag(e);
       },
       { passive: false },
     );
 
-    window.addEventListener('touchend', endDrag);
+    window.addEventListener('touchend', (e) => {
+      if (e.touches.length < 2) this.isPinching = false;
+      endDrag();
+    });
 
     target.addEventListener(
       'wheel',
@@ -635,7 +631,8 @@ export class MandelbrotShader {
           this.renderGL();
           this.renderOverlay();
         } else {
-          this.renderFallbackAsync();
+          this.renderFallback();
+          this.renderOverlay();
         }
       },
       { passive: false },

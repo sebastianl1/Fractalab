@@ -37,8 +37,7 @@ export class BifurcationCanvas {
 
   private _rafId: number | null = null;
   private _dirty = false;
-  private _sizeReady = false;
-  private _resizeTimer: number | null = null;
+  private _lastPinchDist = 0;
 
   constructor(canvasElement: HTMLCanvasElement, onSelectR: (r: number) => void) {
     this.canvas = canvasElement;
@@ -147,10 +146,8 @@ export class BifurcationCanvas {
     this.cacheCanvas = null;
     this.lyapunovNorm = null;
     this.cacheKey = '';
-    if (this._sizeReady) {
-      this.requestCompute();
-      this.render();
-    }
+    this.requestCompute();
+    this.render();
   }
 
   resize(): void {
@@ -161,16 +158,7 @@ export class BifurcationCanvas {
     this.canvas.style.width = `${rect.width}px`;
     this.canvas.style.height = `${rect.height}px`;
     this.ctx.imageSmoothingEnabled = false;
-
-    this._sizeReady = true;
-
-    // Debounce compute during rapid resize (window drag, tab switch)
-    if (this._resizeTimer !== null) window.clearTimeout(this._resizeTimer);
-    this._resizeTimer = window.setTimeout(() => {
-      this._resizeTimer = null;
-      this.cacheKey = '';
-      this.render();
-    }, 150);
+    this.render();
   }
 
   setSelectedR(r: number): void {
@@ -225,7 +213,7 @@ export class BifurcationCanvas {
   }
 
   private _render(): void {
-    if (!this._sizeReady || !this.canvas.width || !this.canvas.height || !this.model) return;
+    if (!this.canvas.width || !this.canvas.height || !this.model) return;
 
     const width = this.canvas.width;
     const height = this.canvas.height;
@@ -387,6 +375,14 @@ export class BifurcationCanvas {
       'touchstart',
       (e) => {
         e.preventDefault();
+        if (e.touches.length === 2) {
+          const t0 = e.touches[0];
+          const t1 = e.touches[1];
+          if (t0 && t1) {
+            this._lastPinchDist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
+          }
+          return;
+        }
         startDrag(e.touches[0]!.clientX);
       },
       { passive: false },
@@ -395,6 +391,27 @@ export class BifurcationCanvas {
     window.addEventListener(
       'touchmove',
       (e) => {
+        if (e.touches.length === 2 && this._lastPinchDist > 0) {
+          const t0 = e.touches[0];
+          const t1 = e.touches[1];
+          if (!t0 || !t1 || !this.model) return;
+          e.preventDefault();
+          const dist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
+          const scale = dist / this._lastPinchDist;
+          const span = (this.rRange.max - this.rRange.min) * (1 / scale);
+          const mid = (this.rRange.min + this.rRange.max) / 2;
+          const newMin = Math.max(this.model.rRange.min, mid - span / 2);
+          const newMax = Math.min(this.model.rRange.max, mid + span / 2);
+          if (newMax - newMin > 0.005) {
+            this.rRange.min = newMin;
+            this.rRange.max = newMax;
+            this.cacheKey = '';
+            this.requestCompute();
+            this.render();
+          }
+          this._lastPinchDist = dist;
+          return;
+        }
         if (!isDraggingR) return;
         e.preventDefault();
         moveDrag(e.touches[0]!.clientX);
@@ -402,7 +419,10 @@ export class BifurcationCanvas {
       { passive: false },
     );
 
-    window.addEventListener('touchend', endDrag);
+    window.addEventListener('touchend', (e) => {
+      if (e.touches.length < 2) this._lastPinchDist = 0;
+      endDrag();
+    });
 
     target.addEventListener(
       'wheel',
