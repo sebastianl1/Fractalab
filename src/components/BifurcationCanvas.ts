@@ -26,7 +26,13 @@ export class BifurcationCanvas {
   private selectedR = 3.0;
 
   private showLyapunov = true;
-  private orbitDensity = 1200;
+  private orbitDensity = 800;
+  private _isDragging = false;
+
+  /** Use fewer points during drag for responsiveness. */
+  private get effectiveOrbitDensity(): number {
+    return this._isDragging ? Math.min(400, this.orbitDensity) : this.orbitDensity;
+  }
 
   private worker: Worker | null = null;
   private computeId = 0;
@@ -94,7 +100,7 @@ export class BifurcationCanvas {
       height: this.canvas.height,
       xMin: this.xRange.min,
       xMax: this.xRange.max,
-      orbitDensity: this.orbitDensity,
+      orbitDensity: this.effectiveOrbitDensity,
       computeLyapunov: this.showLyapunov,
     };
   }
@@ -139,6 +145,8 @@ export class BifurcationCanvas {
   }
 
   setModel(model: BifurcationModel): void {
+    // Same model → preserve cached image (prevents flicker on every R drag in syncUI)
+    if (this.model === model) return;
     this.model = model;
     this.rRange = { ...model.rRange };
     this.xRange = { ...model.xRange };
@@ -197,6 +205,11 @@ export class BifurcationCanvas {
   }
 
   render(): void {
+    // If cache is valid and we have an image, render immediately (no rAF delay)
+    if (this.cacheCanvas && this.model && this.currentKey() === this.cacheKey) {
+      this._render();
+      return;
+    }
     this._scheduleRender();
   }
 
@@ -259,12 +272,11 @@ export class BifurcationCanvas {
       this.ctx.imageSmoothingEnabled = false;
       this.ctx.drawImage(this.cacheCanvas, 0, 0, width, height);
     } else if (this.model) {
-      // Placeholder while computing
+      // Subtle loading indicator while computing
+      const dpr = Math.max(window.devicePixelRatio || 1, 2);
       this.ctx.fillStyle = colors.ink;
-      this.ctx.font = '14px "JetBrains Mono", monospace';
-      this.ctx.textAlign = 'center';
-      this.ctx.globalAlpha = 0.4;
-      this.ctx.fillText('computando…', width / 2, height / 2);
+      this.ctx.globalAlpha = 0.15;
+      this.ctx.fillRect(width * 0.35, height * 0.48, width * 0.3, 3 * dpr);
       this.ctx.globalAlpha = 1;
     }
 
@@ -342,11 +354,10 @@ export class BifurcationCanvas {
   }
 
   private initEvents(): void {
-    let isDraggingR = false;
     const target = this.canvas.parentElement ?? this.canvas;
 
     const startDrag = (clientX: number): void => {
-      isDraggingR = true;
+      this._isDragging = true;
       const rect = target.getBoundingClientRect();
       const px = (clientX - rect.left) * (this.canvas.width / rect.width);
       const newR = this.pixelXToR(px);
@@ -355,7 +366,7 @@ export class BifurcationCanvas {
     };
 
     const moveDrag = (clientX: number): void => {
-      if (!isDraggingR) return;
+      if (!this._isDragging) return;
       const rect = target.getBoundingClientRect();
       const px = (clientX - rect.left) * (this.canvas.width / rect.width);
       const newR = this.pixelXToR(px);
@@ -364,7 +375,7 @@ export class BifurcationCanvas {
     };
 
     const endDrag = (): void => {
-      isDraggingR = false;
+      this._isDragging = false;
     };
 
     target.addEventListener('mousedown', (e) => startDrag(e.clientX));
@@ -414,7 +425,7 @@ export class BifurcationCanvas {
           this._lastPinchDist = dist;
           return;
         }
-        if (!isDraggingR) return;
+        if (!this._isDragging) return;
         e.preventDefault();
         moveDrag(e.touches[0]!.clientX);
       },
