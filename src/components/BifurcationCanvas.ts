@@ -204,6 +204,10 @@ export class BifurcationCanvas {
     return this.rRange.min + (px / this.canvas.width) * (this.rRange.max - this.rRange.min);
   }
 
+  private xToPixelY(x: number): number {
+    return (1.0 - (x - this.xRange.min) / (this.xRange.max - this.xRange.min)) * this.canvas.height;
+  }
+
   render(): void {
     this._scheduleRender();
   }
@@ -246,6 +250,22 @@ export class BifurcationCanvas {
       this.ctx.stroke();
     }
 
+    // Axis labels (r axis at bottom, x axis at left)
+    this.ctx.fillStyle = colors.ink;
+    this.ctx.font = '11px "JetBrains Mono", monospace';
+    this.ctx.textAlign = 'center';
+    const rMin = this.rRange.min;
+    const rMax = this.rRange.max;
+    this.ctx.globalAlpha = 0.6;
+    this.ctx.fillText(rMin.toFixed(1), this.rToPixelX(rMin + (rMax - rMin) * 0.06), height - 10);
+    this.ctx.fillText(rMax.toFixed(1), this.rToPixelX(rMin + (rMax - rMin) * 0.94), height - 10);
+    this.ctx.textAlign = 'left';
+    const yLabels = [this.xRange.min, this.xRange.max];
+    for (const yv of yLabels) {
+      this.ctx.fillText(yv.toFixed(1), 4, this.xToPixelY(yv) + 4);
+    }
+    this.ctx.globalAlpha = 1;
+
     // Cached density bitmap
     if (this.cacheCanvas) {
       this.ctx.imageSmoothingEnabled = false;
@@ -277,9 +297,13 @@ export class BifurcationCanvas {
     this.ctx.shadowBlur = 14;
     this.ctx.stroke();
 
-    this.ctx.fillStyle = colors.ink;
+    // Cursor tooltip
+    const labelX = Math.min(selPx + 8, width - 95);
+    this.ctx.fillStyle = 'rgba(7, 11, 24, 0.75)';
+    this.ctx.fillRect(labelX - 4, 12, 90, 18);
+    this.ctx.fillStyle = colors.amber;
     this.ctx.font = 'bold 12px "JetBrains Mono", monospace';
-    this.ctx.fillText(`r = ${this.selectedR.toFixed(4)}`, Math.min(selPx + 8, width - 95), 24);
+    this.ctx.fillText(`r = ${this.selectedR.toFixed(4)}`, labelX, 26);
     this.ctx.restore();
   }
 

@@ -101,6 +101,11 @@ export class HistogramCanvas {
     this.ctx.fillText(xMin.toFixed(2), margin, margin + plotH + 12 * dpr);
     this.ctx.fillText(xMax.toFixed(2), margin + plotW - 34 * dpr, margin + plotH + 12 * dpr);
 
+    // y-axis label
+    this.ctx.textAlign = 'right';
+    this.ctx.fillText('dens.', margin - 4 * dpr, margin + 14 * dpr);
+    this.ctx.textAlign = 'left';
+
     this.ctx.fillStyle = colors.ink;
     this.ctx.font = `${Math.floor(11 * dpr)}px "JetBrains Mono", monospace`;
     this.ctx.fillText(

@@ -83,6 +83,18 @@ export class TimeSeriesCanvas {
     this.ctx.lineTo(x0 + plotW, midY);
     this.ctx.stroke();
 
+    // Axis labels
+    this.ctx.fillStyle = colors.ink;
+    this.ctx.font = '10px "JetBrains Mono", monospace';
+    this.ctx.globalAlpha = 0.5;
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('n=0', x0 + 10 * dpr, y0 + plotH + 14 * dpr);
+    this.ctx.fillText(`n=${POINTS}`, x0 + plotW - 10 * dpr, y0 + plotH + 14 * dpr);
+    this.ctx.textAlign = 'right';
+    this.ctx.fillText(xMax.toFixed(2), x0 - 6 * dpr, mapY(xMax) + 3 * dpr);
+    this.ctx.fillText(xMin.toFixed(2), x0 - 6 * dpr, mapY(xMin) + 3 * dpr);
+    this.ctx.globalAlpha = 1;
+
     // polyline
     this.ctx.beginPath();
     for (let i = 0; i < POINTS; i++) {

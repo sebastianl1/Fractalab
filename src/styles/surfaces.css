@@ -92,10 +92,10 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.45rem 0.7rem;
-  min-height: 38px;
+  padding: 0.55rem 0.8rem;
+  min-height: 42px;
   border-bottom: 1px solid var(--border);
-  background: rgba(3, 5, 13, 0.4);
+  background: rgba(3, 5, 13, 0.45);
 }
 
 /* Telemetry tag rendered from data-sys */
@@ -113,7 +113,7 @@
 
 .panel-title {
   font-family: var(--font-display);
-  font-size: 0.78rem;
+  font-size: 0.85rem;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -124,9 +124,10 @@
 
 .panel-sub {
   display: none;
-  font-size: 0.62rem;
+  font-size: 0.72rem;
   font-family: var(--font-mono);
   color: var(--text-dim);
+  opacity: 0.8;
 }
 
 @media (min-width: 1024px) {
@@ -145,13 +146,13 @@
 .panel-body {
   position: relative;
   flex: 1;
-  min-height: 220px;
-  z-index: 0;
+  min-height: 240px;
+  z-index: 1;
 }
 
 @media (min-width: 769px) {
   .panel-body {
-    min-height: 260px;
+    min-height: 280px;
   }
 }
 
@@ -204,6 +205,11 @@ canvas {
   align-items: center;
   gap: 0.4rem;
   flex-wrap: wrap;
+}
+
+.control-group + .control-group {
+  padding-left: 0.8rem;
+  border-left: 1px solid var(--border);
 }
 
 input[type='range'] {
@@ -479,6 +485,8 @@ input[type='range']::-moz-range-thumb {
   align-items: baseline;
   gap: 0.6rem;
   flex-wrap: wrap;
+  background: rgba(232, 184, 75, 0.06);
+  padding: 0.4rem 0.6rem 0.4rem 0.8rem;
 }
 
 .state-title {
