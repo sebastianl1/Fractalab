@@ -1,8 +1,9 @@
 import { RESOURCES } from '../content/resources.js';
 import { i18n } from '../core/i18n.js';
 import type { Lang } from '../core/i18n.js';
+import type { ResourceEntry, ResourceKind } from '../content/resources.js';
 
-/** Renders the "Recursos" tab: bibliography and references. */
+/** Renders the "Recursos" tab with categorized bibliography. */
 export class ResourcesView {
   private container: HTMLElement;
 
@@ -11,40 +12,68 @@ export class ResourcesView {
   }
 
   render(lang: Lang): void {
-    const items = RESOURCES.map((r) => {
-      const link = r.url
-        ? `<a class="resource-link" href="${r.url}" target="_blank" rel="noopener noreferrer">↗ ${lang === 'es' ? 'Ver fuente' : 'View source'}</a>`
-        : '';
-      const note = r.note ? `<p class="resource-note">${this.esc(r.note[lang])}</p>` : '';
-      return `
-        <article class="resource-entry" data-kind="${r.kind}">
-          <span class="resource-kind">${this.kindLabel(r.kind, lang)}</span>
-          <p class="resource-citation">${this.esc(r.citation[lang])}</p>
-          ${note}
-          ${link}
-        </article>
-      `;
-    }).join('');
+    const books = RESOURCES.filter((r) => r.kind === 'book');
+    const papers = RESOURCES.filter((r) => r.kind === 'paper');
+    const online = RESOURCES.filter((r) => r.kind === 'online' || r.kind === 'tool');
 
-    const readMore =
-      lang === 'es'
-        ? 'Para iniciarte, se recomienda el texto de Strogatz; el artículo de May (1976) es la lectura obligada que inspiró este laboratorio.'
-        : 'To get started, Strogatz’s textbook is recommended; May’s 1976 paper is the essential reading that inspired this laboratory.';
+    const primary = RESOURCES.find((r) => r.primary);
+    const primaryBanner = primary
+      ? `<div class="resource-primary">
+           <span class="resource-primary-badge">📖 ${lang === 'es' ? 'OBRA MAESTRA' : 'FOUNDATIONAL WORK'}</span>
+           <p class="resource-primary-citation">${this.esc(primary.citation[lang])}</p>
+           <p class="resource-primary-note">${this.esc(primary.note?.[lang] ?? '')}</p>
+           ${primary.url ? `<a class="resource-link" href="${primary.url}" target="_blank" rel="noopener noreferrer">↗ Wikipedia</a>` : ''}
+         </div>`
+      : '';
+
+    const section = (title: string, items: ResourceEntry[]): string => {
+      if (items.length === 0) return '';
+      const entries = items.map((r) => this.renderEntry(r, lang)).join('');
+      return `<div class="resources-section"><h3 class="resources-section-title">${title}</h3><div class="resources-list">${entries}</div></div>`;
+    };
 
     this.container.innerHTML = `
       <div class="resources-hero">
         <h2>📖 ${i18n.t('resources.title')}</h2>
         <p>${i18n.t('resources.subtitle')}</p>
-        <p class="resources-read-more">${readMore}</p>
+        <p class="resources-read-more">
+          ${lang === 'es'
+            ? 'La base conceptual de FractaLab Sl es el campo del caos determinista, desde Lorenz (1963) hasta las aplicaciones modernas.'
+            : 'The conceptual foundation of FractaLab Sl is the field of deterministic chaos, from Lorenz (1963) to modern applications.'}
+        </p>
       </div>
-      <div class="resources-list">${items}</div>
+      ${primaryBanner}
+      ${section(lang === 'es' ? '📕 Libros de Referencia' : '📕 Reference Books', books)}
+      ${section(lang === 'es' ? '📄 Artículos Seminales' : '📄 Seminal Papers', papers)}
+      ${section(lang === 'es' ? '🌐 Recursos Online' : '🌐 Online Resources', online)}
     `;
   }
 
-  private kindLabel(kind: string, lang: Lang): string {
-    if (kind === 'book') return lang === 'es' ? '📕 Libro' : '📕 Book';
-    if (kind === 'classic') return lang === 'es' ? '⭐ Clásico' : '⭐ Classic';
-    return lang === 'es' ? '📄 Artículo' : '📄 Paper';
+  private renderEntry(r: ResourceEntry, lang: Lang): string {
+    const link = r.url
+      ? `<a class="resource-link" href="${r.url}" target="_blank" rel="noopener noreferrer">↗ ${lang === 'es' ? 'Enlace' : 'Link'}</a>`
+      : '';
+    const note = r.note ? `<p class="resource-note">${this.esc(r.note[lang])}</p>` : '';
+    const primaryTag = r.primary ? `<span class="resource-kind" style="color:var(--accent-amber);font-weight:600">⭐ ${lang === 'es' ? 'PRINCIPAL' : 'PRIMARY'}</span>` : '';
+    return `
+      <article class="resource-entry" data-kind="${r.kind}">
+        ${primaryTag}
+        <span class="resource-kind">${this.kindLabel(r.kind, lang)}</span>
+        <p class="resource-citation">${this.esc(r.citation[lang])}</p>
+        ${note}
+        ${link}
+      </article>
+    `;
+  }
+
+  private kindLabel(kind: ResourceKind, lang: Lang): string {
+    const labels: Record<ResourceKind, { es: string; en: string }> = {
+      book: { es: '📕 Libro', en: '📕 Book' },
+      paper: { es: '📄 Artículo', en: '📄 Paper' },
+      online: { es: '🌐 Recurso online', en: '🌐 Online' },
+      tool: { es: '🔧 Herramienta', en: '🔧 Tool' },
+    };
+    return labels[kind]?.[lang] ?? kind;
   }
 
   private esc(value: string): string {

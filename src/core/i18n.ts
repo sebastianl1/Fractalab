@@ -91,6 +91,7 @@ const es: Dict = {
   'learn.incorrect': 'Inténtalo de nuevo.',
   'learn.glossary': 'Glosario',
   'learn.keyPoints': 'Ideas clave',
+  'learn.takeaway': 'Idea Final',
   'learn.backToModules': '← Volver a módulos',
 
   // Videos
@@ -185,6 +186,7 @@ const en: Dict = {
   'learn.incorrect': 'Try again.',
   'learn.glossary': 'Glossary',
   'learn.keyPoints': 'Key ideas',
+  'learn.takeaway': 'Key Takeaway',
   'learn.backToModules': '← Back to modules',
 
   'videos.title': 'Video Lessons',
@@ -202,9 +204,8 @@ class I18n {
   private listeners: Array<(lang: Lang) => void> = [];
 
   constructor() {
-    const nav = (navigator.language || 'es').toLowerCase();
-    this._lang = nav.startsWith('en') ? 'en' : 'es';
-    document.documentElement.lang = this._lang;
+    this._lang = 'es';
+    document.documentElement.lang = 'es';
   }
 
   get lang(): Lang {

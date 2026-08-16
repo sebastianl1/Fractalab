@@ -34,6 +34,7 @@ export interface Lesson {
   intro: { es: string; en: string };
   blocks: { es: LessonBlock[]; en: LessonBlock[] };
   keyPoints: { es: string[]; en: string[] };
+  takeaway?: { es: string; en: string };
   demo?: LessonDemo;
   quiz?: QuizQuestion;
 }
@@ -1150,6 +1151,217 @@ export const MODULES: Module[] = [
       },
     ],
   },
+  // ═══════════════════════════════════════════════════════════════════
+  // MODULE 7 — Las Matemáticas Suena (connects with Sonifier)
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: 'm7',
+    icon: '🎵',
+    title: { es: 'Las Matemáticas Suena', en: 'Mathematics Sounds' },
+    summary: {
+      es: 'Cómo las dinámicas no lineales generan melodías y por qué el caos suena diferente al orden.',
+      en: 'How nonlinear dynamics generates melodies and why chaos sounds different from order.',
+    },
+    lessons: [
+      {
+        id: 'm7-l1',
+        title: { es: 'Órbitas que generan melodías', en: 'Orbits that generate melodies' },
+        intro: {
+          es: 'Al mapear los valores de la órbita a notas musicales, la matemática se convierte en música.',
+          en: 'When orbit values are mapped to musical notes, mathematics becomes music.',
+        },
+        blocks: {
+          es: [
+            {
+              type: 'paragraph',
+              content:
+                'El laboratorio sonifica la órbita del mapa activo: cada valor xₙ se cuantiza a una nota musical de la escala seleccionada (pentatónica menor, menor natural, lidio, etc.). La frecuencia se calcula a partir de la posición de la nota en la escala dentro de un rango de 2-3 octavas.',
+            },
+            {
+              type: 'latex',
+              content:
+                'f = f_0 \\cdot 2^{\\frac{s + 12 \\cdot \\text{oct}}{12}} \\qquad f_0 = 220\\text{ Hz (La}_3\\text{)}',
+            },
+            {
+              type: 'paragraph',
+              content:
+                'En régimen estable (λ < 0), la órbita se repite → la melodía se repite cíclicamente. En período 2, alternan 2 notas; en período 3, 3 notas que forman un arpegio. En caos, la secuencia es aperiódica: suena como improvisación.',
+            },
+            {
+              type: 'aside',
+              content:
+                'Prueba en el laboratorio: activa la sonificación y desplaza r entre 3.2 (período 2, melodía estable), 3.83 (período 3, arpegio) y 3.9 (caos, improvisación). Escucha el contraste.',
+            },
+          ],
+          en: [
+            {
+              type: 'paragraph',
+              content:
+                'The laboratory sonifies the active map\'s orbit: each xₙ value is quantized to a note in the selected scale (pentatonic minor, natural minor, lydian, etc.). Frequency is calculated from the note\'s position in the scale within a 2-3 octave range.',
+            },
+            {
+              type: 'latex',
+              content:
+                'f = f_0 \\cdot 2^{\\frac{s + 12 \\cdot \\text{oct}}{12}} \\qquad f_0 = 220\\text{ Hz (A}_3\\text{)}',
+            },
+            {
+              type: 'paragraph',
+              content:
+                'In stable regime (λ < 0), the orbit repeats → the melody repeats cyclically. In period-2, 2 notes alternate; in period-3, 3 notes form an arpeggio. In chaos, the sequence is aperiodic: it sounds like improvisation.',
+            },
+            {
+              type: 'aside',
+              content:
+                'Try it in the lab: enable sonification and sweep r between 3.2 (period 2, stable melody), 3.83 (period 3, arpeggio), and 3.9 (chaos, improvisation).',
+            },
+          ],
+        },
+        keyPoints: {
+          es: [
+            'La cuantización de la órbita a notas musicales crea melodías que reflejan la dinámica.',
+            'Régimen estable = melodía cíclica; período = arpegio; caos = improvisación.',
+            'La escala pentatónica menor suena suave; la cromática, densa y disonante.',
+          ],
+          en: [
+            'Quantizing the orbit to musical notes creates melodies reflecting the dynamics.',
+            'Stable regime = cyclic melody; period = arpeggio; chaos = improvisation.',
+            'Minor pentatonic sounds smooth; chromatic sounds dense and dissonant.',
+          ],
+        },
+        demo: { modelId: 'logistic', r: 3.2, label: 'Período 2 — melodía estable' },
+        quiz: {
+          question: '¿Qué suena al cuantizar la órbita logística en r = 3.9 (caos)?',
+          options: [
+            { text: 'Una melodía cíclica que se repite cada 2 notas', correct: false },
+            { text: 'Un arpegio de 3 notas que se repite', correct: false },
+            { text: 'Una secuencia aperiódica que suena como improvisación caótica', correct: true },
+            { text: 'Silencio porque la órbita diverge', correct: false },
+          ],
+          explanation:
+            'Con λ > 0, la órbita es aperiódica. Al cuantizar cada valor a una nota, la secuencia musical también es aperiódica, sonando como improvisación caótica.',
+        },
+      },
+      {
+        id: 'm7-l2',
+        title: { es: 'El contraste caos-orden por el sonido', en: 'The chaos-order contrast through sound' },
+        intro: {
+          es: 'El sonido hace palpable el contraste entre orden y caos: es una experiencia auditiva de la sensibilidad a condiciones iniciales.',
+          en: 'Sound makes the contrast between order and chaos tangible: an auditory experience of sensitivity to initial conditions.',
+        },
+        blocks: {
+          es: [
+            {
+              type: 'paragraph',
+              content:
+                'La sonificación usa un sintetizador de piano realista con 5 armónicos y envolvente ADSR. El volumen varía con el exponente de Lyapunov: en órbitas estables (λ < -0.5) suena en piano suave; en caos (λ > 0.05) suena en forte.',
+            },
+            {
+              type: 'paragraph',
+              content:
+                'Esta diferencia dinámica hace que el contraste entre orden y caos se oiga como contraste musical: suave vs. intenso, predecible vs. inesperado. El estudiante puede cerrar los ojos y distinguir los regímenes solo por el sonido.',
+            },
+          ],
+          en: [
+            {
+              type: 'paragraph',
+              content:
+                'The sonification uses a realistic piano synthesizer with 5 harmonics and an ADSR envelope. Volume varies with the Lyapunov exponent: stable orbits (λ < -0.5) play softly; chaos (λ > 0.05) plays forte.',
+            },
+            {
+              type: 'paragraph',
+              content:
+                'This dynamic contrast makes the chaos-order contrast audible: soft vs intense, predictable vs unpredictable. Students can close their eyes and distinguish regimes by sound alone.',
+            },
+          ],
+        },
+        keyPoints: {
+          es: [
+            'El volumen se modula con λ: piano en órbitas estables, forte en caos.',
+            'El contraste sonoro refuerza la comprensión intuitiva de la sensibilidad a C.I.',
+            'Se puede distinguir el régimen solo con el oído.',
+          ],
+          en: [
+            'Volume modulates with λ: piano for stable orbits, forte for chaos.',
+            'Sound contrast reinforces intuitive understanding of sensitivity to initial conditions.',
+            'The regime can be distinguished by ear alone.',
+          ],
+        },
+        demo: { modelId: 'logistic', r: 3.5, label: 'Transición caos ↔ orden' },
+      },
+      {
+        id: 'm7-l3',
+        title: { es: 'Escalas musicales y dinámica no lineal', en: 'Musical scales and nonlinear dynamics' },
+        intro: {
+          es: 'Cada escala musical crea un color sonoro diferente para la misma dinámica, revelando aspectos distintos del comportamiento caótico.',
+          en: 'Each musical scale creates a different sound-color for the same dynamics, revealing distinct aspects of chaotic behavior.',
+        },
+        blocks: {
+          es: [
+            {
+              type: 'paragraph',
+              content:
+                'El laboratorio ofrece 8 escalas: pentatónica menor (suave), menor natural (clásico), lidio (etéreo), blues (soul), cromática (densa) y acordes de piano. Cada una mapea los valores de la órbita a notas diferentes, generando melodías distintas.',
+            },
+            {
+              type: 'paragraph',
+              content:
+                'Los presets de estilo (Melancólica de Einaudi, Clásica de Beethoven, Serenata de Debussy) combinan escala + tempo + timbre para evocar el carácter de cada compositor. En período 3, la cuantización produce notas que recuerdan el tema principal de "Für Elise" de Beethoven.',
+            },
+            {
+              type: 'aside',
+              content:
+                'Experimenta: selecciona "Lidio" en el laboratorio y compara con "Cromática" en la misma órbita. El lidio suena etéreo y luminoso; el cromático su denso y tenso.',
+            },
+          ],
+          en: [
+            {
+              type: 'paragraph',
+              content:
+                'The laboratory offers 8 scales: minor pentatonic (smooth), natural minor (classical), lydian (ethereal), blues (soul), chromatic (dense) and piano chords. Each maps orbit values to different notes, generating different melodies.',
+            },
+            {
+              type: 'paragraph',
+              content:
+                'Style presets (Einaudi Melancholy, Beethoven Classical, Debussy Serenade) combine scale + tempo + timbre to evoke each composer\'s character. In period 3, quantization produces notes reminiscent of "Für Elise."',
+            },
+            {
+              type: 'aside',
+              content:
+                'Experiment: select "Lydian" in the lab and compare with "Chromatic" on the same orbit. Lydian sounds ethereal and luminous; chromatic sounds dense and tense.',
+            },
+          ],
+        },
+        keyPoints: {
+          es: [
+            'Cada escala musical crea un color sonoro diferente para la misma dinámica.',
+            'Los presets de estilo combinan escala + tempo + timbre para evocar compositores.',
+            'La música refleja la estructura matemática subyacente de la órbita.',
+          ],
+          en: [
+            'Each musical scale creates a different sound-color for the same dynamics.',
+            'Style presets combine scale + tempo + timbre to evoke composers.',
+            'The music reflects the underlying mathematical structure of the orbit.',
+          ],
+        },
+        takeaway: {
+          es: 'La música y las matemáticas comparten la misma estructura: patrones, repeticiones, variaciones y rupturas. Las escalas musicales son a los mapas dinámicos lo que las paletas de color son a los fractales.',
+          en: 'Music and mathematics share the same structure: patterns, repetitions, variations, and ruptures. Musical scales are to dynamic maps what color palettes are to fractals.',
+        },
+        demo: { modelId: 'logistic', r: 3.83, label: 'Período 3 — suena a "Für Elise"' },
+        quiz: {
+          question: '¿Qué preset de estilo suena más parecido a la música de Einaudi?',
+          options: [
+            { text: 'Clásica (Beethoven) — menor natural, rápido', correct: false },
+            { text: 'Melancólica (Einaudi) — menor natural, tempo medio, timbre cálido', correct: true },
+            { text: 'Serenata (Debussy) — lidio, lento, suave', correct: false },
+            { text: 'Ninguno se parece', correct: false },
+          ],
+          explanation:
+            'El preset "Melancólica (Einaudi)" usa la escala menor natural con tempo medio (140ms) y timbre cálido (warmth 0.6), evocando el estilo melancólico y contemplativo de Einaudi.',
+        },
+      },
+    ],
+  },
 ];
 
 export const GLOSSARY: GlossaryTerm[] = [
@@ -1222,6 +1434,66 @@ export const GLOSSARY: GlossaryTerm[] = [
     term: 'Isomorfismo',
     es: 'Correspondencia que preserva la dinámica entre dos sistemas.',
     en: 'A correspondence that preserves the dynamics between two systems.',
+  },
+  {
+    term: 'Mapa unimodal',
+    es: 'Función con un único máximo en el intervalo (como la campana del logístico).',
+    en: 'A function with a single maximum on the interval (like the logistic bell).',
+  },
+  {
+    term: 'Atractor extraño',
+    es: 'Conjunto fractal hacia el que convergen las órbitas en sistemas caóticos, con dimensión fraccionaria.',
+    en: 'A fractal set toward which orbits converge in chaotic systems, with fractional dimension.',
+  },
+  {
+    term: 'Entropía topológica',
+    es: 'Medida de la complejidad de la dinámica: cuánta información se pierde al observar el sistema a baja resolución.',
+    en: 'Measure of dynamical complexity: how much information is lost observing the system at low resolution.',
+  },
+  {
+    term: 'Conjugación topológica',
+    es: 'Homeomorfismo que conjugá dos mapas dinámicos, preservando su estructura orbital.',
+    en: 'A homeomorphism conjugating two dynamical maps, preserving their orbital structure.',
+  },
+  {
+    term: 'Bifurcación de flip',
+    es: 'Transición donde un punto fijo estable se vuelve inestable y nace un ciclo de periodo 2 (el punto fijo "da un vuelco").',
+    en: 'Transition where a stable fixed point becomes unstable and a period-2 cycle is born (the fixed point "flips").',
+  },
+  {
+    term: 'Transitorio',
+    es: 'Fase inicial de la órbita antes de que el sistema se establezca en su comportamiento a largo plazo.',
+    en: 'The initial phase of the orbit before the system settles into its long-term behavior.',
+  },
+  {
+    term: 'Resolución de fase',
+    es: 'Espacio multidimensional (xₙ, xₙ₊₁, xₙ₊₂, …) que revela la geometría del atractor.',
+    en: 'Multidimensional space revealing the geometry of the attractor.',
+  },
+  {
+    term: 'Sensibilidad a parámetros',
+    es: 'Cambio cualitativo abrupto de la dinámica ante una tiny variación del parámetro r.',
+    en: 'Abrupt qualitative change in dynamics upon a tiny variation of parameter r.',
+  },
+  {
+    term: 'Modo musical',
+    es: 'Conjunto de notas que define el "color sonoro" al mapear la órbita a frecuencias.',
+    en: 'Set of notes defining the "sound-color" when mapping the orbit to frequencies.',
+  },
+  {
+    term: 'Armadónico',
+    es: 'Componente de frecuencia que no es exactamente múltiplo de la fundamental (como en las cuerdas de piano reales).',
+    en: 'A frequency component that is not an exact integer multiple of the fundamental (like real piano strings).',
+  },
+  {
+    term: 'Envolvente ADSR',
+    es: 'Perfil temporal del volumen de una nota: Ataque, Decaimiento, Sostenimiento, Liberación.',
+    en: 'Temporal volume profile of a note: Attack, Decay, Sustain, Release.',
+  },
+  {
+    term: 'Sensibilidad a C.I.',
+    es: 'Propiedad del caos: dos condiciones iniciales infinitesimalmente cercanas evolucionan exponencialmente lejos.',
+    en: 'A property of chaos: two infinitesimally close initial conditions evolve exponentially far apart.',
   },
 ];
 

@@ -149,6 +149,7 @@ export class LearnView {
         <h4>📌 ${i18n.t('learn.keyPoints')}</h4>
         <ul>${keyPoints}</ul>
       </div>
+      ${lesson.takeaway ? `<div class="learn-takeaway"><strong>💡 ${i18n.t('learn.takeaway')}:</strong> ${this.esc(lesson.takeaway[lang])}</div>` : ''}
       ${demo}
       ${quiz}
     `;
