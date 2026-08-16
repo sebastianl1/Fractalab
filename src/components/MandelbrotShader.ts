@@ -29,7 +29,12 @@ varying vec2 vUv;
 
 // Observatorio Espacial palettes (mirrored in mandelbrotCompute.ts)
 vec3 palette0(float t) {
-  return vec3(1.0, 0.45 + 0.35 * t, 0.05 + 0.25 * t * t);
+  // Solar: dark → warm amber → bright warm white (no constant red channel)
+  return vec3(
+    0.06 + 0.94 * pow(t, 0.5),
+    0.04 + 0.6  * pow(t, 0.8),
+    0.02 + 0.3  * pow(t, 1.5)
+  );
 }
 
 vec3 palette1(float t) {
@@ -116,8 +121,6 @@ export class MandelbrotShader {
   dragCenterStart = { x: 0, y: 0 };
 
   private useWebGL = true;
-  private _rafId: number | null = null;
-  private _needFallbackRender = false;
   private mandelbrotWorker: Worker | null = null;
   private mandelbrotComputeId = 0;
 
@@ -133,21 +136,6 @@ export class MandelbrotShader {
     this.initGL();
     if (!this.renderer) this.useWebGL = false;
     this.initEvents();
-  }
-
-  private _scheduleFallbackRender(): void {
-    if (this.useWebGL && this.renderer) return;
-    if (this._needFallbackRender) return;
-    this._needFallbackRender = true;
-    if (this._rafId !== null) return;
-    this._rafId = requestAnimationFrame(() => {
-      this._rafId = null;
-      if (this._needFallbackRender) {
-        this._needFallbackRender = false;
-        this.renderFallbackAsync();
-        this.renderOverlay();
-      }
-    });
   }
 
   private ensureFallbackWorker(): void {
@@ -532,6 +520,8 @@ export class MandelbrotShader {
   }
 
   private initEvents(): void {
+    const target = this.canvas.parentElement ?? this.canvas;
+
     const getCoords = (e: MouseEvent | TouchEvent): { x: number; y: number } => {
       if ('touches' in e && e.touches.length > 0) {
         const touch = e.touches[0];
@@ -550,7 +540,7 @@ export class MandelbrotShader {
     const moveDrag = (e: MouseEvent | TouchEvent): void => {
       if (!this.isDragging) return;
       const c = getCoords(e);
-      const rect = this.canvas.parentElement?.getBoundingClientRect() ?? RECT_FALLBACK;
+      const rect = target.getBoundingClientRect();
       const dx = ((c.x - this.dragStart.x) / rect.width) * this.zoom;
       const dy = ((c.y - this.dragStart.y) / rect.height) * this.zoom;
 
@@ -562,16 +552,13 @@ export class MandelbrotShader {
         this.renderGL();
         this.renderOverlay();
       } else {
-        this._scheduleFallbackRender();
+        this.renderFallbackAsync();
       }
     };
 
     const endDrag = (): void => {
       this.isDragging = false;
       if (!this.useWebGL || !this.renderer) {
-        this._needFallbackRender = false;
-        if (this._rafId !== null) cancelAnimationFrame(this._rafId);
-        this._rafId = null;
         this.renderFallbackAsync();
         this.renderOverlay();
       }
@@ -580,7 +567,7 @@ export class MandelbrotShader {
     const handleClick = (e: MouseEvent | TouchEvent): void => {
       const c = getCoords(e);
       if (Math.abs(this.dragStart.x - c.x) < 5 && Math.abs(this.dragStart.y - c.y) < 5) {
-        const rect = this.canvas.parentElement?.getBoundingClientRect() ?? RECT_FALLBACK;
+        const rect = target.getBoundingClientRect();
         const px = c.x - rect.left;
         const py = c.y - rect.top;
         const comp = this.pixelToComplex(px, py);
@@ -591,12 +578,12 @@ export class MandelbrotShader {
       }
     };
 
-    this.canvas.addEventListener('mousedown', startDrag);
+    target.addEventListener('mousedown', startDrag);
     window.addEventListener('mousemove', moveDrag);
     window.addEventListener('mouseup', endDrag);
-    this.canvas.addEventListener('click', handleClick);
+    target.addEventListener('click', handleClick);
 
-    this.canvas.addEventListener(
+    target.addEventListener(
       'touchstart',
       (e) => {
         e.preventDefault();
@@ -617,11 +604,12 @@ export class MandelbrotShader {
 
     window.addEventListener('touchend', endDrag);
 
-    this.canvas.addEventListener(
+    target.addEventListener(
       'wheel',
       (e) => {
         e.preventDefault();
-        const rect = this.canvas.parentElement?.getBoundingClientRect() ?? RECT_FALLBACK;
+        e.stopPropagation();
+        const rect = target.getBoundingClientRect();
         const c = getCoords(e);
         const px = c.x - rect.left;
         const py = c.y - rect.top;
@@ -639,6 +627,7 @@ export class MandelbrotShader {
         this.centerX += comp.cr - newCr;
         this.centerY += comp.ci - newCi;
 
+        // Render immediately for instant visual feedback.
         if (this.useWebGL && this.renderer && this.material) {
           this.material.uniforms.uCenter!.value.set(this.centerX, this.centerY);
           this.material.uniforms.uZoom!.value = this.zoom;
@@ -646,7 +635,7 @@ export class MandelbrotShader {
           this.renderGL();
           this.renderOverlay();
         } else {
-          this._scheduleFallbackRender();
+          this.renderFallbackAsync();
         }
       },
       { passive: false },

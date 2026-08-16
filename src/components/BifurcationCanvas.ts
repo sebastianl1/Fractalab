@@ -355,10 +355,11 @@ export class BifurcationCanvas {
 
   private initEvents(): void {
     let isDraggingR = false;
+    const target = this.canvas.parentElement ?? this.canvas;
 
     const startDrag = (clientX: number): void => {
       isDraggingR = true;
-      const rect = this.canvas.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
       const px = (clientX - rect.left) * (this.canvas.width / rect.width);
       const newR = this.pixelXToR(px);
       this.setSelectedR(newR);
@@ -367,7 +368,7 @@ export class BifurcationCanvas {
 
     const moveDrag = (clientX: number): void => {
       if (!isDraggingR) return;
-      const rect = this.canvas.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
       const px = (clientX - rect.left) * (this.canvas.width / rect.width);
       const newR = this.pixelXToR(px);
       this.setSelectedR(newR);
@@ -378,11 +379,11 @@ export class BifurcationCanvas {
       isDraggingR = false;
     };
 
-    this.canvas.addEventListener('mousedown', (e) => startDrag(e.clientX));
+    target.addEventListener('mousedown', (e) => startDrag(e.clientX));
     window.addEventListener('mousemove', (e) => moveDrag(e.clientX));
     window.addEventListener('mouseup', endDrag);
 
-    this.canvas.addEventListener(
+    target.addEventListener(
       'touchstart',
       (e) => {
         e.preventDefault();
@@ -403,11 +404,12 @@ export class BifurcationCanvas {
 
     window.addEventListener('touchend', endDrag);
 
-    this.canvas.addEventListener(
+    target.addEventListener(
       'wheel',
       (e) => {
         e.preventDefault();
-        const rect = this.canvas.getBoundingClientRect();
+        e.stopPropagation();
+        const rect = target.getBoundingClientRect();
         const px = (e.clientX - rect.left) * (this.canvas.width / rect.width);
         const mouseR = this.pixelXToR(px);
 
@@ -422,8 +424,6 @@ export class BifurcationCanvas {
         if (newMax - newMin > 0.005) {
           this.rRange.min = newMin;
           this.rRange.max = newMax;
-          // Keep the previous cached image as a placeholder while the worker
-          // recomputes; only replace it when the new result arrives.
           this.cacheKey = '';
           this.requestCompute();
           this.render();

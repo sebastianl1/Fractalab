@@ -33,11 +33,11 @@ function shade(smooth: number, maxIter: number, palette: number): [number, numbe
   const t = smooth / maxIter;
   const cycle = (smooth * 0.08) % 1;
 
-  // Solar — amber → gold → deep orange
+  // Solar — amber → gold → warm white (mirrors GLSL palette0)
   if (palette === 0) {
-    const r = 1.0;
-    const g = 0.45 + 0.35 * t;
-    const b = 0.05 + 0.25 * t * t;
+    const r = 0.06 + 0.94 * Math.pow(t, 0.5);
+    const g = 0.04 + 0.6 * Math.pow(t, 0.8);
+    const b = 0.02 + 0.3 * Math.pow(t, 1.5);
     return [r * 255, g * 255, b * 255];
   }
   // Nebulosa — cyan → violet
